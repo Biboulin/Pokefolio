@@ -46,4 +46,4 @@ Modifie les fichiers, **incrémente `VERSION` dans `sw.js`**, puis commit et pus
 
 ## Classeurs (POC v2)
 Nouvelle app dans `classeurs/` : classeurs de cartes animés, classeurs d'échange, wishlist, prix d'achat et prix actuel saisis à la main, liens eBay (ventes réussies) et Cardmarket, mode Vitrine pour partager une page.
-En ligne sur `https://<ton-user>.github.io/pokefolio/classeurs/`, à installer à part depuis Safari. Elle n'a aucun lien avec les données de la v1 (son stockage est séparé).
+En ligne sur `https://<ton-user>.github.io/Pokefolio/classeurs/` (attention à la majuscule, GitHub Pages respecte la casse du nom du repo`, à installer à part depuis Safari. Elle n'a aucun lien avec les données de la v1 (son stockage est séparé).
