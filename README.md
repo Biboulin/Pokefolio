@@ -43,3 +43,7 @@ Modifie les fichiers, **incrémente `VERSION` dans `sw.js`**, puis commit et pus
 ## Feuille de route
 - [ ] Mise à jour automatique des prix (GitHub Actions + API TCGdex → `prices.json`)
 - [ ] Synchronisation entre appareils (petit backend)
+
+## Classeurs (POC v2)
+Nouvelle app dans `classeurs/` : classeurs de cartes animés, classeurs d'échange, wishlist, prix d'achat et prix actuel saisis à la main, liens eBay (ventes réussies) et Cardmarket, mode Vitrine pour partager une page.
+En ligne sur `https://<ton-user>.github.io/pokefolio/classeurs/`, à installer à part depuis Safari. Elle n'a aucun lien avec les données de la v1 (son stockage est séparé).
