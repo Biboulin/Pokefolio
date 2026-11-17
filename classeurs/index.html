@@ -101,14 +101,14 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 .pages{flex:1;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;perspective:1400px;align-items:center}
 .pages::-webkit-scrollbar{display:none}
 .page{flex:0 0 100%;scroll-snap-align:center;display:grid;place-items:center;padding:10px 0}
-.sheetpage{--w:min(calc(100vw - 34px),calc((100dvh - 230px - var(--st) - var(--sb)) * .74),520px);width:var(--w);position:relative;padding:4.5% 4.5% 4.5% 9%;border-radius:10px 16px 16px 10px;
+.sheetpage{--w:min(calc(100vw - 34px),calc((100dvh - 230px - var(--st) - var(--sb)) * var(--ratio,.74)),520px);width:var(--w);position:relative;padding:4.5% 4.5% 4.5% 9%;border-radius:10px 16px 16px 10px;
   background:color-mix(in srgb,var(--c) 28%,#0E0F18);
   box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 30px 50px -20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.05);
   will-change:transform;transform-origin:center}
 .holes{position:absolute;left:3%;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-evenly}
 .holes i{width:9px;height:9px;border-radius:50%;background:color-mix(in srgb,var(--c) 70%,#000);box-shadow:0 1px 0 rgba(255,255,255,.12)}
 .grid9{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4%}
-.pocket{position:relative;aspect-ratio:63/88;border-radius:var(--card-r);background:rgba(255,255,255,.05);box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;overflow:hidden;transition:transform .3s var(--ease),box-shadow .2s}
+.pocket{-webkit-touch-callout:none;position:relative;aspect-ratio:63/88;border-radius:var(--card-r);background:rgba(255,255,255,.05);box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;overflow:hidden;transition:transform .3s var(--ease),box-shadow .2s}
 .pocket img{width:100%;height:100%;object-fit:cover;border-radius:var(--card-r)}
 .pocket::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 62%,rgba(255,255,255,.1) 75%,rgba(255,255,255,0) 90%);box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}
 .pocket.empty{display:grid;place-items:center;color:rgba(255,255,255,.28)}
@@ -116,10 +116,13 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 .pocket.empty:active{background:rgba(255,255,255,.1)}
 .pocket .qty{position:absolute;right:5%;bottom:4%;z-index:2;font-size:10px;font-weight:700;background:rgba(0,0,0,.7);padding:2px 5px;border-radius:6px}
 .pocket.sel{box-shadow:0 0 0 3px #FFD25E;transform:scale(.94)}
-.reorder .pocket:not(.empty){animation:jiggle .32s ease-in-out infinite alternate}
-.reorder .pocket:nth-child(2n){animation-delay:-.16s}
-@keyframes jiggle{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
-.pocket.drop img{animation:slidein .6s var(--spring) both}
+.pocket.drop img{animation:slidein .6s var(--spring) both;animation-delay:calc(var(--d,0) * 70ms)}
+.pocket.hole img{opacity:.18;filter:grayscale(1)}
+.pocket.over{box-shadow:0 0 0 3px #FFD25E;transform:scale(1.04)}
+.pocket.lifted{position:fixed;z-index:80;margin:0;pointer-events:none;transform:scale(1.12) rotate(-3deg);box-shadow:0 26px 40px -12px rgba(0,0,0,.6);transition:transform .25s var(--spring)}
+.pocket.found{animation:found .9s ease-in-out 2}
+@keyframes found{0%,100%{box-shadow:0 0 0 0 rgba(255,210,94,0)}35%{box-shadow:0 0 0 4px #FFD25E;transform:scale(1.07)}}
+.pocket img{-webkit-touch-callout:none}
 @keyframes slidein{from{transform:translateY(-70%) scale(1.15) rotate(-6deg);opacity:0}to{transform:none;opacity:1}}
 .bfoot{padding:6px 16px calc(var(--sb) + 16px);display:flex;flex-direction:column;align-items:center;gap:14px}
 .dots{display:flex;gap:6px}
@@ -184,6 +187,40 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 .sugg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
 .ph{width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:10%;background:linear-gradient(160deg,var(--ph1),var(--ph2));color:var(--ph-ink);font-size:11px;font-weight:600;line-height:1.2}
 
+/* mode + extensions */
+.mode{margin-top:12px}
+.setlist{display:flex;flex-direction:column}
+.setrow{display:flex;align-items:center;gap:14px;padding:12px 0;width:100%;text-align:left;border-bottom:1px solid var(--line)}
+.slogo{width:68px;height:40px;flex:none;display:grid;place-items:center}
+.slogo img{max-width:100%;max-height:100%;object-fit:contain}
+.slogo.txt{border-radius:10px;background:var(--field);font-family:var(--display);font-weight:600;font-size:12px;color:var(--muted)}
+.sinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.sinfo b{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ssub{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{height:4px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:3px;max-width:180px}
+.bar i{display:block;height:100%;border-radius:inherit;background:var(--up);transition:width .6s var(--ease)}
+.sethead{display:flex;align-items:center;gap:12px;padding:2px 0 14px}
+.sethead .icon-btn{flex:none}
+.setopts{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.scard{text-align:left;position:relative}
+.scard .thumb{transition:transform .25s var(--spring),box-shadow .2s}
+.scard.missing .thumb img{opacity:.5;filter:grayscale(.85)}
+.scard.sel .thumb{transform:scale(.95);box-shadow:0 0 0 3px #FFD25E,0 10px 18px -10px rgba(20,24,40,.5)}
+.scard.sel .thumb img{opacity:1;filter:none}
+.scard .s{font-size:11.5px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.own,.pick{position:absolute;top:5%;right:6%;min-width:22px;height:22px;padding:0 5px;border-radius:99px;display:grid;place-items:center;font-size:11px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:2}
+.own{background:var(--up);color:#fff}
+.own svg,.pick svg{width:12px;height:12px}
+.pick{background:#FFD25E;color:#3B2600;transform:scale(0);transition:transform .3s var(--spring)}
+.scard.sel .pick{transform:scale(1)}
+.scard.sel .own{opacity:0}
+.addbar{position:absolute;left:16px;right:16px;bottom:calc(var(--sb) + 14px);z-index:5;transform:translateY(160%);transition:transform .45s var(--spring)}
+.addbar.show{transform:none}
+.addbar .btn{box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
+.results.pad{padding-bottom:calc(var(--sb) + 96px)}
+.where{font-size:11.5px;color:var(--muted);line-height:1.3}
+.topbtns{display:flex;gap:10px}
+
 /* card hero + holo */
 .hero{display:grid;place-items:center;padding:6px 0 18px;perspective:900px}
 .holo{--rx:0deg;--ry:0deg;--mx:50%;--my:50%;--o:0;position:relative;width:min(62vw,250px);aspect-ratio:63/88;border-radius:4.5%/3.3%;transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .5s var(--ease);touch-action:none;box-shadow:0 30px 40px -22px rgba(20,24,40,.6),0 0 0 1px rgba(0,0,0,.05)}
@@ -235,18 +272,18 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 .toast .dot{width:26px;height:26px;border-radius:50%;background:#FFD25E;display:grid;place-items:center;color:#3B2600}
 
 /* showcase */
-.show{position:fixed;inset:0;z-index:70;background:var(--c);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:calc(var(--st) + 20px) 22px calc(var(--sb) + 20px);color:#fff;
+.vitrine{position:fixed;inset:0;z-index:70;background:var(--c);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:calc(var(--st) + 20px) 22px calc(var(--sb) + 20px);color:#fff;
   background-image:radial-gradient(90% 55% at 50% 0%,rgba(255,255,255,.22),transparent 70%),radial-gradient(70% 50% at 100% 100%,rgba(0,0,0,.35),transparent 70%);opacity:0;transition:opacity .4s}
-.show.open{opacity:1}
-.show .frame{width:min(100%,calc((100dvh - var(--st) - var(--sb) - 60px) * .8),460px);aspect-ratio:4/5;display:flex;flex-direction:column}
-.show .t1{font-family:var(--display);font-weight:700;font-size:clamp(24px,7.5vw,34px);line-height:1.05;letter-spacing:-.02em;margin:0 0 4px}
-.show .t2{font-size:14px;opacity:.8;margin-bottom:16px;font-variant-numeric:tabular-nums}
-.show .sheetpage{--w:100%;flex:1;width:100%;padding:4% 4% 4% 8%}
-.show .brand{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;font-weight:600;opacity:.85}
-.show .brand b{font-family:var(--display);font-weight:600}
-.show .x{position:absolute;top:calc(var(--st) + 12px);right:16px;background:rgba(255,255,255,.18);color:#fff;box-shadow:none;transition:opacity .4s}
-.show .shint{position:absolute;bottom:calc(var(--sb) + 14px);left:0;right:0;text-align:center;font-size:13px;opacity:.85;transition:opacity .4s}
-.show.clean .x,.show.clean .shint{opacity:0}
+.vitrine.open{opacity:1}
+.vitrine .frame{width:min(100%,calc((100dvh - var(--st) - var(--sb) - 60px) * .8),460px);aspect-ratio:4/5;display:flex;flex-direction:column}
+.vitrine .t1{font-family:var(--display);font-weight:700;font-size:clamp(24px,7.5vw,34px);line-height:1.05;letter-spacing:-.02em;margin:0 0 4px}
+.vitrine .t2{font-size:14px;opacity:.8;margin-bottom:16px;font-variant-numeric:tabular-nums}
+.vitrine .sheetpage{flex:1;min-height:0;width:auto;max-width:100%;align-self:center;aspect-ratio:var(--pr,.8);padding:4% 4% 4% 8%}
+.vitrine .brand{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;font-weight:600;opacity:.85}
+.vitrine .brand b{font-family:var(--display);font-weight:600}
+.vitrine .x{position:absolute;top:calc(var(--st) + 12px);right:16px;background:rgba(255,255,255,.18);color:#fff;box-shadow:none;transition:opacity .4s}
+.vitrine .shint{position:absolute;bottom:calc(var(--sb) + 14px);left:0;right:0;text-align:center;font-size:13px;opacity:.85;transition:opacity .4s}
+.vitrine.clean .x,.show.clean .shint{opacity:0}
 
 /* cover-open transition */
 .flyer{position:fixed;z-index:60;pointer-events:none;transform-origin:left center;backface-visibility:hidden}
@@ -282,7 +319,6 @@ const COLORS = [
 ];
 const VARIANTS = ['Normale','Reverse','Holo'];
 const CONDS = ['NM','EX','GD','PL'];
-const PER_PAGE = 9;
 
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
@@ -343,7 +379,7 @@ function deltaHtml(buy, cur){
 }
 
 /* ---------- Sets (pour nom d'extension + numérotation) ---------- */
-let SETS = {}, SET_ORDER = {};
+let SETS = {}, SET_ORDER = {}, SET_LIST = [];
 async function loadSets(){
   try {
     const c = JSON.parse(localStorage.getItem('pokefolio.sets') || 'null');
@@ -355,7 +391,28 @@ async function loadSets(){
     applySets(d);
   } catch {}
 }
-function applySets(list){ list.forEach((s, i) => { SETS[s.id] = s; SET_ORDER[s.id] = i; }); }
+function applySets(list){ SET_LIST = list; list.forEach((s, i) => { SETS[s.id] = s; SET_ORDER[s.id] = i; }); }
+const norm = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const natSort = (a, b) => String(a.localId).localeCompare(String(b.localId), 'fr', {numeric:true});
+const per = b => b.layout || 9;
+const cols = b => (b.layout === 4 ? 2 : 3);
+const ratio = b => (b.layout === 12 ? .57 : .74);
+function ownedMap(){
+  const m = new Map();
+  S.binders.forEach(b => b.slots.forEach(e => { if (e) m.set(e.t.id, (m.get(e.t.id) || 0) + (e.qty || 1)); }));
+  return m;
+}
+function ownedBySet(){
+  const seen = new Set(), c = {};
+  S.binders.forEach(b => b.slots.forEach(e => { if (e && !seen.has(e.t.id)) { seen.add(e.t.id); c[e.t.setId] = (c[e.t.setId] || 0) + 1; } }));
+  return c;
+}
+function setLogo(s){
+  const ini = esc((s.name || s.id || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase());
+  return s.logo
+    ? `<span class="slogo" data-i="${ini}"><img src="${s.logo}.webp" alt="" loading="lazy" onerror="const p=this.parentNode;p.classList.add('txt');p.textContent=p.dataset.i"></span>`
+    : `<span class="slogo txt">${ini}</span>`;
+}
 function setIdOf(cardId){ const i = cardId.lastIndexOf('-'); return i > 0 ? cardId.slice(0, i) : cardId; }
 function brief(c){
   const sid = c.set?.id || setIdOf(c.id), s = SETS[sid];
@@ -465,7 +522,7 @@ function renderHome(){
     </button>`;
   }).join('');
   $('#home').innerHTML = `
-    <div class="top"><h1>Classeurs</h1><button class="icon-btn" id="settings" aria-label="Réglages">${I.gear}</button></div>
+    <div class="top"><h1>Classeurs</h1><div class="topbtns"><button class="icon-btn" id="find" aria-label="Chercher dans mes cartes">${I.search}</button><button class="icon-btn" id="settings" aria-label="Réglages">${I.gear}</button></div></div>
     <p class="summary">${n ? `<strong>${n} carte${n > 1 ? 's' : ''}</strong> dans ${S.binders.length} classeur${S.binders.length > 1 ? 's' : ''}${val ? `<br>Valeur estimée <strong>${eur(val)}</strong> ${deltaHtml(buy, priced)}` : ''}` : 'Ton premier classeur t’attend. Ajoute une carte avec le bouton jaune.'}</p>
     <div class="shelf">${covers}
       <button class="binder" id="newBinder"><span class="cover new"><span>${I.plus}Nouveau classeur</span></span><span class="bmeta">&nbsp;</span></button>
@@ -473,19 +530,22 @@ function renderHome(){
   $$('[data-open]', $('#home')).forEach(el => el.onclick = () => openBinder(el.dataset.open, el));
   $('#newBinder').onclick = () => editBinder();
   $('#settings').onclick = openSettings;
+  $('#find').onclick = openFind;
 }
 
 /* ---------- Binder edit ---------- */
 function editBinder(b){
   const isNew = !b;
   b = b || {name:'', color:COLORS[(S.binders.length) % COLORS.length].id, kind:'collection'};
-  let color = b.color, kind = b.kind;
+  let color = b.color, kind = b.kind, layout = b.layout || 9;
   const w = openSheet(`
     <h3>${isNew ? 'Nouveau classeur' : 'Modifier le classeur'}</h3>
     <div class="field"><label for="bn">Nom</label><input id="bn" class="txt" maxlength="40" placeholder="Ex. Écarlate et Violet" value="${esc(b.name)}"></div>
     <div class="field"><span class="flabel">Usage</span><div class="seg" id="kind">
       <button data-k="collection" class="${kind === 'collection' ? 'on' : ''}">Collection</button>
       <button data-k="trade" class="${kind === 'trade' ? 'on' : ''}">Échange</button></div></div>
+    <div class="field"><span class="flabel">Cartes par page</span><div class="seg" id="layout">
+      ${[4, 9, 12].map(n => `<button data-l="${n}" class="${layout === n ? 'on' : ''}">${n}</button>`).join('')}</div></div>
     <div class="field"><span class="flabel">Couverture</span><div class="swatches">${COLORS.map(c => `<button class="sw ${c.id === color ? 'on' : ''}" data-c="${c.id}" style="--c:${c.c}" aria-label="${c.name}"></button>`).join('')}</div></div>
     <div class="actions">
       <button class="btn" id="bsave">${isNew ? 'Créer le classeur' : 'Enregistrer'}</button>
@@ -493,10 +553,11 @@ function editBinder(b){
     </div>`);
   $$('.sw', w).forEach(s => s.onclick = () => { color = s.dataset.c; $$('.sw', w).forEach(x => x.classList.toggle('on', x === s)); });
   $$('#kind button', w).forEach(s => s.onclick = () => { kind = s.dataset.k; $$('#kind button', w).forEach(x => x.classList.toggle('on', x === s)); });
+  $$('#layout button', w).forEach(s => s.onclick = () => { layout = +s.dataset.l; $$('#layout button', w).forEach(x => x.classList.toggle('on', x === s)); });
   $('#bsave', w).onclick = () => {
     const name = $('#bn', w).value.trim() || (kind === 'trade' ? 'Échanges' : 'Classeur');
-    if (isNew) S.binders.push({id:uid(), name, color, kind, slots:[]});
-    else Object.assign(b, {name, color, kind});
+    if (isNew) S.binders.push({id:uid(), name, color, kind, layout, slots:[]});
+    else Object.assign(b, {name, color, kind, layout});
     save(); closeSheet(w); renderHome(); if (curBinder) renderBinder();
     toast(isNew ? 'Classeur créé' : 'Classeur enregistré');
   };
@@ -510,20 +571,21 @@ function editBinder(b){
 /* =========================================================
    BINDER VIEW
    ========================================================= */
-let curBinder = null, reorder = false, selSlot = null, curPage = 0;
+let curBinder = null, curPage = 0, dragEndedAt = 0;
 function pageCount(b){
   let last = -1; b.slots.forEach((e, i) => { if (e) last = i; });
-  return Math.floor((last + 1) / PER_PAGE) + 1; // pages remplies + une page libre
+  return Math.floor((last + 1) / per(b)) + 1; // pages remplies + une page libre
 }
 function pageHtml(b, p, dropAt){
   let cells = '';
-  for (let i = p * PER_PAGE; i < (p + 1) * PER_PAGE; i++) {
-    const e = b.slots[i];
+  const drops = dropAt instanceof Set ? [...dropAt] : dropAt != null ? [dropAt] : [];
+  for (let i = p * per(b); i < (p + 1) * per(b); i++) {
+    const e = b.slots[i], k = drops.indexOf(i);
     cells += e
-      ? `<button class="pocket ${i === dropAt ? 'drop' : ''} ${i === selSlot ? 'sel' : ''}" data-slot="${i}" aria-label="${esc(e.t.name)}">${cardImgHtml(e.t)}${e.qty > 1 ? `<span class="qty">×${e.qty}</span>` : ''}</button>`
-      : `<button class="pocket empty ${i === selSlot ? 'sel' : ''}" data-slot="${i}" aria-label="Pochette vide, ajouter une carte">${I.plus}</button>`;
+      ? `<button class="pocket ${k >= 0 ? 'drop' : ''}" style="--d:${Math.max(0, k)}" data-slot="${i}" aria-label="${esc(e.t.name)}">${cardImgHtml(e.t)}${e.qty > 1 ? `<span class="qty">×${e.qty}</span>` : ''}</button>`
+      : `<button class="pocket empty" data-slot="${i}" aria-label="Pochette vide, ajouter une carte">${I.plus}</button>`;
   }
-  return `<div class="sheetpage"><div class="holes"><i></i><i></i><i></i></div><div class="grid9">${cells}</div></div>`;
+  return `<div class="sheetpage" style="--ratio:${ratio(b)};--pr:${b.layout === 12 ? .62 : .8}"><div class="holes"><i></i><i></i><i></i></div><div class="grid9" style="grid-template-columns:repeat(${cols(b)},minmax(0,1fr))">${cells}</div></div>`;
 }
 function renderBinder(dropAt){
   const b = binderById(curBinder); if (!b) return;
@@ -536,23 +598,88 @@ function renderBinder(dropAt){
       <div style="flex:1;min-width:0"><h2>${esc(b.name)}</h2><div class="bsub">${s.n} carte${s.n > 1 ? 's' : ''}${s.val ? ` · ${eur(s.val)}` : ''}</div></div>
       <button class="icon-btn" id="bedit" aria-label="Modifier le classeur">${I.more}</button>
     </div>
-    <div class="pages ${reorder ? 'reorder' : ''}" id="pages">${Array.from({length:pc}, (_, p) => `<section class="page">${pageHtml(b, p, dropAt)}</section>`).join('')}</div>
+    <div class="pages" id="pages">${Array.from({length:pc}, (_, p) => `<section class="page">${pageHtml(b, p, dropAt)}</section>`).join('')}</div>
     <div class="bfoot">
       <div class="dots">${Array.from({length:pc}, (_, p) => `<i class="${p === curPage ? 'on' : ''}"></i>`).join('')}</div>
       <div class="bactions">
-        <button class="pill ${reorder ? 'on' : ''}" id="breorder">${reorder ? I.check + 'Terminé' : I.swap + 'Réorganiser'}</button>
+        <button class="pill" id="badd">${I.plus}Ajouter</button>
         <button class="pill light" id="bshow">${I.star}Vitrine</button>
       </div>
     </div>`;
   $('#bback').onclick = closeBinder;
   $('#bedit').onclick = () => editBinder(b);
-  $('#breorder').onclick = () => { reorder = !reorder; selSlot = null; renderBinder(); };
+  $('#badd').onclick = () => openSearch({binderId:b.id});
   $('#bshow').onclick = () => showcase(b);
   const pages = $('#pages');
   pages.scrollLeft = curPage * pages.clientWidth;
   pages.addEventListener('scroll', () => requestAnimationFrame(() => pageFx(pages)), {passive:true});
   pageFx(pages);
   $$('[data-slot]', el).forEach(p => p.onclick = () => onPocket(b, +p.dataset.slot, p));
+  enableDrag(b, pages);
+  if (s.n >= 2) { let seen = false; try { seen = localStorage.getItem('pokefolio.hint.drag'); localStorage.setItem('pokefolio.hint.drag', '1'); } catch {} if (!seen) setTimeout(() => toast('Maintiens une carte pour la déplacer'), 900); }
+}
+
+/* ---------- Glisser-déposer : appui long, puis dépôt sur une pochette ---------- */
+function enableDrag(b, pages){
+  let timer = null, sx = 0, sy = 0, drag = null, flipT = null;
+  const pocketAt = (x, y) => { const el = document.elementFromPoint(x, y); const p = el && el.closest('#pages .pocket'); return p || null; };
+  const begin = (el, x, y) => {
+    const i = +el.dataset.slot; if (!b.slots[i]) return;
+    const r = el.getBoundingClientRect();
+    const g = el.cloneNode(true); g.classList.add('lifted'); g.classList.remove('drop');
+    Object.assign(g.style, {left:r.left + 'px', top:r.top + 'px', width:r.width + 'px', height:r.height + 'px'});
+    document.body.appendChild(g); el.classList.add('hole');
+    pages.style.overflowX = 'hidden';
+    drag = {i, el, g, ox:x - r.left, oy:y - r.top, over:null};
+    try { navigator.vibrate && navigator.vibrate(12); } catch {}
+  };
+  const move = (x, y) => {
+    drag.g.style.left = (x - drag.ox) + 'px'; drag.g.style.top = (y - drag.oy) + 'px';
+    const p = pocketAt(x, y);
+    if (p !== drag.over) { drag.over && drag.over.classList.remove('over'); drag.over = p && p !== drag.el ? p : null; drag.over && drag.over.classList.add('over'); }
+    const edge = x < 30 ? -1 : x > innerWidth - 30 ? 1 : 0;
+    if (edge && !flipT) flipT = setTimeout(() => {
+      flipT = null; const np = Math.max(0, Math.min($$('.page', pages).length - 1, curPage + edge));
+      pages.scrollTo({left:np * pages.clientWidth, behavior:'smooth'});
+    }, 420);
+    if (!edge && flipT) { clearTimeout(flipT); flipT = null; }
+  };
+  const end = () => {
+    clearTimeout(flipT); flipT = null; dragEndedAt = Date.now();
+    const d = drag; drag = null; pages.style.overflowX = '';
+    if (d.over) {
+      const j = +d.over.dataset.slot, a = b.slots[d.i];
+      b.slots[d.i] = b.slots[j] || null; b.slots[j] = a; save();
+      const r = d.over.getBoundingClientRect();
+      d.g.animate([{left:d.g.style.left, top:d.g.style.top}, {left:r.left + 'px', top:r.top + 'px', transform:'none', boxShadow:'none'}], {duration:220, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish = () => { d.g.remove(); renderBinder(); };
+    } else {
+      const r = d.el.getBoundingClientRect();
+      d.g.animate([{left:d.g.style.left, top:d.g.style.top}, {left:r.left + 'px', top:r.top + 'px', transform:'none'}], {duration:240, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish = () => { d.g.remove(); d.el.classList.remove('hole'); };
+    }
+  };
+  // Tactile (iPhone)
+  pages.addEventListener('touchstart', e => {
+    const el = e.target.closest('.pocket:not(.empty)'); if (!el || e.touches.length > 1) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    timer = setTimeout(() => { timer = null; begin(el, sx, sy); }, 380);
+  }, {passive:true});
+  pages.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    if (drag) { e.preventDefault(); move(t.clientX, t.clientY); return; }
+    if (timer && Math.hypot(t.clientX - sx, t.clientY - sy) > 8) { clearTimeout(timer); timer = null; }
+  }, {passive:false});
+  const tend = () => { clearTimeout(timer); timer = null; if (drag) end(); };
+  pages.addEventListener('touchend', tend); pages.addEventListener('touchcancel', tend);
+  pages.addEventListener('contextmenu', e => { if (e.target.closest('.pocket')) e.preventDefault(); });
+  // Souris (ordinateur)
+  pages.addEventListener('mousedown', e => {
+    const el = e.target.closest('.pocket:not(.empty)'); if (!el || e.button !== 0) return;
+    sx = e.clientX; sy = e.clientY;
+    timer = setTimeout(() => { timer = null; begin(el, sx, sy); }, 380);
+    const mm = ev => { if (drag) move(ev.clientX, ev.clientY); else if (timer && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 8) { clearTimeout(timer); timer = null; } };
+    const mu = () => { removeEventListener('mousemove', mm); removeEventListener('mouseup', mu); clearTimeout(timer); timer = null; if (drag) end(); };
+    addEventListener('mousemove', mm); addEventListener('mouseup', mu);
+  });
 }
 function pageFx(pages){
   const w = pages.clientWidth, x = pages.scrollLeft;
@@ -568,16 +695,12 @@ function pageFx(pages){
   if (np !== curPage) { curPage = np; $$('.dots i').forEach((d, i) => d.classList.toggle('on', i === np)); }
 }
 function onPocket(b, i, el){
-  if (reorder) {
-    if (selSlot == null) { if (!b.slots[i]) return; selSlot = i; el.classList.add('sel'); return; }
-    if (selSlot !== i) { const a = b.slots[selSlot]; b.slots[selSlot] = b.slots[i] || null; b.slots[i] = a; save(); }
-    const to = i; selSlot = null; renderBinder(to); return;
-  }
+  if (Date.now() - dragEndedAt < 400) return;
   if (b.slots[i]) cardDetail(b, i);
   else openSearch({binderId:b.id, slot:i});
 }
 function openBinder(id, fromEl){
-  curBinder = id; reorder = false; selSlot = null; curPage = 0;
+  curBinder = id; curPage = 0;
   const b = binderById(id), cover = fromEl && $('.cover', fromEl);
   const view = $('#binder');
   renderBinder(); view.hidden = false; $('#tabbar').classList.add('hide'); document.body.classList.add('in-binder');
@@ -608,7 +731,7 @@ function closeBinder(){
 /* ---------- Showcase (pour capture Insta) ---------- */
 function showcase(b){
   const s = bStats(b), el = document.createElement('div');
-  el.className = 'show'; el.style.setProperty('--c', colorOf(b.color));
+  el.className = 'vitrine'; el.style.setProperty('--c', colorOf(b.color));
   el.innerHTML = `<button class="icon-btn x" aria-label="Fermer">${I.x}</button>
     <div class="frame">
       <p class="t1">${esc(b.name)}</p>
@@ -627,27 +750,58 @@ function showcase(b){
 /* =========================================================
    SEARCH + ADD
    ========================================================= */
-let lastDest = null;
+let lastDest = null, lastMode = 'name';
 function openSearch(ctx={}){
   let dest = ctx.wish ? 'wish' : (ctx.binderId || lastDest || curBinder || S.binders[0].id);
   if (dest !== 'wish' && !binderById(dest)) dest = S.binders[0].id;
+  const fixedSlot = ctx.slot != null;
+  let mode = fixedSlot || ctx.q ? 'name' : lastMode, curSet = null, setCards = [], sel = new Set(), hideOwned = false;
   const w = openSheet(`
-    <div class="sbar"><div class="sinput">${I.search}<input class="txt" id="q" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Nom ou numéro, ex. Dracaufeu 4"></div><button class="link" id="qcancel">Annuler</button></div>
-    ${ctx.slot != null ? '' : `<div class="dest" id="dest">${S.binders.map(b => `<button class="chip ${dest === b.id ? 'on' : ''}" data-d="${b.id}" style="--c:${colorOf(b.color)}"><i></i>${esc(b.name)}</button>`).join('')}<button class="chip ${dest === 'wish' ? 'on' : ''}" data-d="wish" style="--c:#E9B949"><i></i>Wishlist</button></div>`}
-    <div class="results" id="res"></div>`, {full:true});
-  const q = $('#q', w), res = $('#res', w);
+    <div class="sbar"><div class="sinput">${I.search}<input class="txt" id="q" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false"></div><button class="link" id="qcancel">Annuler</button></div>
+    ${fixedSlot ? '' : `<div class="seg mode" id="mode"><button data-m="name">Par nom</button><button data-m="set">Par extension</button></div>`}
+    ${fixedSlot ? '' : `<div class="dest" id="dest">${S.binders.map(b => `<button class="chip ${dest === b.id ? 'on' : ''}" data-d="${b.id}" style="--c:${colorOf(b.color)}"><i></i>${esc(b.name)}</button>`).join('')}<button class="chip ${dest === 'wish' ? 'on' : ''}" data-d="wish" style="--c:#E9B949"><i></i>Wishlist</button></div>`}
+    <div class="results" id="res"></div>
+    <div class="addbar" id="addbar"><button class="btn" id="addsel"></button></div>`, {full:true});
+  const q = $('#q', w), res = $('#res', w), bar = $('#addbar', w);
   $('#qcancel', w).onclick = () => closeSheet(w);
-  $$('#dest .chip', w).forEach(c => c.onclick = () => { dest = c.dataset.d; $$('#dest .chip', w).forEach(x => x.classList.toggle('on', x === c)); });
+  $$('#dest .chip', w).forEach(c => c.onclick = () => { dest = c.dataset.d; $$('#dest .chip', w).forEach(x => x.classList.toggle('on', x === c)); updateBar(); });
+
+  /* --- barre « Ajouter N cartes » --- */
+  const updateBar = () => {
+    const n = sel.size;
+    bar.classList.toggle('show', n > 0); res.classList.toggle('pad', mode === 'set' && !!curSet);
+    if (n) $('#addsel', w).textContent = dest === 'wish' ? `Ajouter ${n} carte${n > 1 ? 's' : ''} à la wishlist` : `Ajouter ${n} carte${n > 1 ? 's' : ''} à ${binderById(dest).name}`;
+  };
+  $('#addsel', w).onclick = () => {
+    const cards = setCards.filter(t => sel.has(t.id)); if (!cards.length) return;
+    if (dest === 'wish') {
+      cards.slice().reverse().forEach(t => S.wishlist.unshift({id:uid(), t, target:null, added:Date.now()}));
+      save(); renderWish(); toast(`${cards.length} carte${cards.length > 1 ? 's' : ''} ajoutée${cards.length > 1 ? 's' : ''} à la wishlist`, cards[0]);
+    } else {
+      const b = binderById(dest), added = new Set();
+      for (const t of cards) {
+        let at = b.slots.findIndex(x => !x); if (at < 0) at = b.slots.length;
+        b.slots[at] = {id:uid(), t, variant:'Normale', cond:'NM', qty:1, buy:null, cur:null, added:Date.now()}; added.add(at);
+      }
+      for (let i = 0; i < b.slots.length; i++) if (b.slots[i] === undefined) b.slots[i] = null;
+      save(); lastDest = dest;
+      if (curBinder === b.id) { curPage = Math.floor([...added][0] / per(b)); renderBinder(added); }
+      renderHome(); toast(`${cards.length} carte${cards.length > 1 ? 's' : ''} ajoutée${cards.length > 1 ? 's' : ''} à ${b.name}`, cards[0]);
+    }
+    closeSheet(w);
+  };
+
+  /* --- mode Par nom --- */
   const idle = () => {
-    const recent = recentCards();
+    const recent = recentCards(), own = ownedMap();
     res.innerHTML = `<div class="hint">Tape le nom d’un Pokémon en français.<br>Ajoute le numéro pour aller plus vite.
       <div class="sugg">${['Pikachu', 'Dracaufeu', 'Évoli', 'Mew', 'Rayquaza', 'Ectoplasma'].map(s => `<button class="chip" data-s="${s}">${s}</button>`).join('')}</div></div>
-      ${recent.length ? `<div class="flabel" style="margin:4px 0 12px">Ajoutées récemment</div><div class="rgrid">${recent.map((t, i) => resultHtml(t, i)).join('')}</div>` : ''}`;
+      ${recent.length ? `<div class="flabel" style="margin:4px 0 12px">Ajoutées récemment</div><div class="rgrid">${recent.map((t, i) => resultHtml(t, i, own)).join('')}</div>` : ''}`;
     $$('[data-s]', res).forEach(c => c.onclick = () => { q.value = c.dataset.s; run(); });
     bindResults(recent);
   };
   const bindResults = list => $$('[data-r]', res).forEach(c => c.onclick = () => {
-    const t = list[+c.dataset.r]; const d = ctx.slot != null ? ctx.binderId : dest;
+    const t = list[+c.dataset.r]; const d = fixedSlot ? ctx.binderId : dest;
     cardForm(t, {dest:d, slot:ctx.slot, onDone:() => closeSheet(w)});
   });
   let timer, ctrl;
@@ -665,21 +819,127 @@ function openSearch(ctx={}){
       let list = (await r.json()) || [];
       if (numTok) { const n = numTok.split('/')[0].replace(/^0+/, '').toLowerCase(); list = list.filter(c => String(c.localId).replace(/^0+/, '').toLowerCase() === n); }
       list = list.map(brief).sort((a, b) => (!!b.image - !!a.image) || ((SET_ORDER[b.setId] ?? -1) - (SET_ORDER[a.setId] ?? -1)) || (parseInt(a.localId) - parseInt(b.localId))).slice(0, 150);
+      if (mode !== 'name') return;
       if (!list.length) { res.innerHTML = `<div class="hint">Aucune carte trouvée pour « ${esc(raw)} ».<br>Vérifie l’orthographe française, ex. Dracaufeu plutôt que Charizard.</div>`; return; }
-      res.innerHTML = `<div class="rgrid">${list.map((t, i) => resultHtml(t, i)).join('')}</div>`;
+      const own = ownedMap();
+      res.innerHTML = `<div class="rgrid">${list.map((t, i) => resultHtml(t, i, own)).join('')}</div>`;
       bindResults(list);
     } catch (e) {
       if (e.name === 'AbortError') return;
       res.innerHTML = `<div class="hint">La recherche ne répond pas. Vérifie ta connexion puis réessaie.</div>`;
     }
   };
-  q.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 280); });
-  q.addEventListener('keydown', e => { if (e.key === 'Enter') { clearTimeout(timer); run(); q.blur(); } });
-  idle();
-  setTimeout(() => q.focus(), 350);
+
+  /* --- mode Par extension --- */
+  const renderSets = async () => {
+    if (!SET_LIST.length) {
+      res.innerHTML = `<div class="setlist">${'<div class="setrow"><span class="slogo"><span class="skel" style="width:60px;height:30px;aspect-ratio:auto"></span></span><span class="sinfo"><span class="skel" style="height:14px;width:60%;aspect-ratio:auto"></span></span></div>'.repeat(6)}</div>`;
+      await loadSets();
+      if (mode !== 'set' || curSet) return;
+      if (!SET_LIST.length) { res.innerHTML = `<div class="hint">La liste des extensions ne répond pas. Vérifie ta connexion puis réessaie.</div>`; return; }
+    }
+    const own = ownedBySet(), f = norm(q.value.trim());
+    const list = SET_LIST.slice().reverse().filter(st => !f || norm(st.name).includes(f) || norm(st.id).includes(f));
+    res.innerHTML = list.length ? `<div class="setlist">${list.map(st => {
+      const n = own[st.id] || 0, tot = st.cardCount?.official || st.cardCount?.total || 0;
+      return `<button class="setrow" data-set="${esc(st.id)}">${setLogo(st)}<span class="sinfo"><b>${esc(st.name)}</b><span class="ssub">${n ? `${n} / ${tot} possédées` : `${tot} cartes`}</span>${n ? `<span class="bar"><i style="width:${tot ? Math.min(100, n / tot * 100) : 0}%"></i></span>` : ''}</span></button>`;
+    }).join('')}</div>` : `<div class="hint">Aucune extension ne correspond à « ${esc(q.value.trim())} ».</div>`;
+    $$('[data-set]', res).forEach(r => r.onclick = () => openSetView(r.dataset.set));
+  };
+  const openSetView = async id => {
+    curSet = SET_LIST.find(st => st.id === id) || {id, name:id}; setCards = []; sel.clear(); hideOwned = false;
+    q.value = ''; q.placeholder = 'Filtrer, ex. Pikachu ou 25'; q.blur(); updateBar();
+    res.scrollTop = 0; renderSet(true);
+    try {
+      const r = await fetch(`${API}/sets/${encodeURIComponent(id)}`); if (!r.ok) throw 0;
+      const d = await r.json(); if (curSet?.id !== id) return;
+      curSet = Object.assign({}, curSet, d);
+      setCards = (d.cards || []).map(c => brief({...c, set:{id:d.id, name:d.name, cardCount:d.cardCount}})).sort(natSort);
+      renderSet();
+    } catch { if (curSet?.id === id) res.innerHTML = `<div class="hint">Impossible de charger cette extension. Vérifie ta connexion puis réessaie.</div>`; }
+  };
+  const renderSet = (loading) => {
+    const own = ownedMap(), f = norm(q.value.trim()), fnum = /^\d+$/.test(f) ? f.replace(/^0+/, '') : null;
+    const tot = curSet.cardCount?.official || setCards.length || 0;
+    const nOwned = setCards.filter(t => own.has(t.id)).length;
+    const list = setCards.map((t, i) => ({t, i})).filter(({t}) => (!hideOwned || !own.has(t.id)) && (!f || (fnum != null ? String(t.localId).replace(/^0+/, '') === fnum : norm(t.name).includes(f))));
+    const allSel = list.length && list.every(({t}) => sel.has(t.id));
+    res.innerHTML = `
+      <div class="sethead"><button class="icon-btn" id="sback" aria-label="Toutes les extensions">${I.back}</button>${setLogo(curSet)}
+        <div class="sinfo"><b>${esc(curSet.name)}</b><span class="ssub">${loading ? 'Chargement…' : `${nOwned} / ${tot} possédées`}</span><span class="bar"><i style="width:${tot ? Math.min(100, nOwned / tot * 100) : 0}%"></i></span></div></div>
+      ${loading ? `<div class="rgrid">${'<div><div class="skel"></div></div>'.repeat(12)}</div>` : `
+      <div class="setopts"><button class="chip ${hideOwned ? 'on' : ''}" id="hideown">Masquer celles que j’ai</button><button class="chip" id="selall">${allSel ? 'Tout désélectionner' : 'Tout sélectionner'}</button></div>
+      ${list.length ? `<div class="rgrid">${list.map(({t, i}) => `<button class="scard ${own.has(t.id) ? 'owned' : 'missing'} ${sel.has(t.id) ? 'sel' : ''}" data-i="${i}" aria-pressed="${sel.has(t.id)}"><div class="thumb">${cardImgHtml(t)}${own.has(t.id) ? `<span class="own">${own.get(t.id) > 1 ? '×' + own.get(t.id) : I.check}</span>` : ''}<span class="pick">${I.check}</span></div><div class="s">${esc(t.localId)}  ${esc(t.name)}</div></button>`).join('')}</div>`
+        : `<div class="hint">${hideOwned && !f ? 'Tu as toute l’extension. Bravo.' : 'Aucune carte ne correspond.'}</div>`}`}`;
+    $('#sback', res).onclick = () => { curSet = null; sel.clear(); q.value = ''; q.placeholder = 'Nom de l’extension, ex. 151'; updateBar(); renderSets(); };
+    if (loading) return;
+    $('#hideown', res).onclick = () => { hideOwned = !hideOwned; renderSet(); };
+    $('#selall', res).onclick = () => { list.forEach(({t}) => allSel ? sel.delete(t.id) : sel.add(t.id)); updateBar(); renderSet(); };
+    $$('[data-i]', res).forEach(c => c.onclick = () => {
+      const t = setCards[+c.dataset.i];
+      sel.has(t.id) ? sel.delete(t.id) : sel.add(t.id);
+      c.classList.toggle('sel', sel.has(t.id)); c.setAttribute('aria-pressed', sel.has(t.id));
+      updateBar();
+    });
+  };
+
+  /* --- bascule de mode --- */
+  const setMode = m => {
+    mode = m; if (!fixedSlot) lastMode = m;
+    $$('#mode button', w).forEach(b => b.classList.toggle('on', b.dataset.m === m));
+    curSet = null; sel.clear(); setCards = []; q.value = ctx.q && m === 'name' ? ctx.q : '';
+    q.placeholder = m === 'name' ? 'Nom ou numéro, ex. Dracaufeu 4' : 'Nom de l’extension, ex. 151';
+    updateBar();
+    if (m === 'name') { q.value.trim().length >= 2 ? run() : idle(); } else renderSets();
+  };
+  $$('#mode button', w).forEach(b => b.onclick = () => setMode(b.dataset.m));
+  q.addEventListener('input', () => {
+    clearTimeout(timer);
+    if (mode === 'name') timer = setTimeout(run, 280);
+    else timer = setTimeout(() => curSet ? renderSet() : renderSets(), 120);
+  });
+  q.addEventListener('keydown', e => { if (e.key === 'Enter') { q.blur(); if (mode === 'name') { clearTimeout(timer); run(); } } });
+  setMode(mode);
+  if (mode === 'name' && !ctx.q) setTimeout(() => q.focus(), 350);
 }
-function resultHtml(t, i){
-  return `<button class="rcard" data-r="${i}" style="animation-delay:${Math.min(i, 18) * 22}ms"><div class="thumb">${cardImgHtml(t)}</div><div class="n">${esc(t.name)}</div><div class="s">${esc(t.setName)} ${esc(numLabel(t))}</div></button>`;
+function resultHtml(t, i, own){
+  const n = own && own.get(t.id);
+  return `<button class="rcard" data-r="${i}" style="animation-delay:${Math.min(i, 18) * 22}ms"><div class="thumb">${cardImgHtml(t)}${n ? `<span class="own" title="Déjà dans tes classeurs">${n > 1 ? '×' + n : I.check}</span>` : ''}</div><div class="n">${esc(t.name)}</div><div class="s">${esc(t.setName)} ${esc(numLabel(t))}</div></button>`;
+}
+
+/* ---------- Chercher dans mes cartes ---------- */
+function openFind(){
+  const w = openSheet(`
+    <div class="sbar"><div class="sinput">${I.search}<input class="txt" id="fq" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Chercher dans mes cartes"></div><button class="link" id="fcancel">Fermer</button></div>
+    <div class="results" id="fres"></div>`, {full:true});
+  const q = $('#fq', w), res = $('#fres', w);
+  $('#fcancel', w).onclick = () => closeSheet(w);
+  const all = [];
+  S.binders.forEach(b => b.slots.forEach((e, i) => e && all.push({t:e.t, b, i, e})));
+  S.wishlist.forEach(x => all.push({t:x.t, wish:x}));
+  const render = () => {
+    const raw = q.value.trim(), f = norm(raw);
+    if (!f) { res.innerHTML = `<div class="hint">${all.length ? `Tape un nom, une extension ou un numéro pour vérifier si tu l’as déjà.` : 'Tes classeurs sont vides pour l’instant.'}</div>`; return; }
+    const fnum = /^\d+$/.test(f) ? f.replace(/^0+/, '') : null;
+    const list = all.filter(o => fnum != null ? String(o.t.localId).replace(/^0+/, '') === fnum : (norm(o.t.name).includes(f) || norm(o.t.setName).includes(f)));
+    if (!list.length) {
+      res.innerHTML = `<div class="hint">Tu n’as pas encore « ${esc(raw)} ».<div class="sugg"><button class="chip on" id="fadd">${I.plus.replace('<svg', '<svg width="14" height="14"')}Chercher pour l’ajouter</button></div></div>`;
+      $('#fadd', res).onclick = () => { closeSheet(w); setTimeout(() => openSearch({q:raw}), 250); };
+      return;
+    }
+    res.innerHTML = `<div class="rgrid">${list.map((o, k) => `<button class="rcard" data-k="${k}" style="animation-delay:${Math.min(k, 18) * 22}ms"><div class="thumb">${cardImgHtml(o.t)}</div><div class="n">${esc(o.t.name)}</div><div class="where">${o.wish ? 'Wishlist' : `${esc(o.b.name)}, page ${Math.floor(o.i / per(o.b)) + 1}`}</div></button>`).join('')}</div>`;
+    $$('[data-k]', res).forEach(c => c.onclick = () => {
+      const o = list[+c.dataset.k]; closeSheet(w);
+      if (o.wish) { setTab('wish'); const idx = S.wishlist.indexOf(o.wish); if (idx >= 0) setTimeout(() => wishDetail(idx), 300); return; }
+      setTimeout(() => {
+        if (curBinder !== o.b.id) openBinder(o.b.id);
+        curPage = Math.floor(o.i / per(o.b)); renderBinder();
+        const p = $(`#pages [data-slot="${o.i}"]`); if (p) setTimeout(() => p.classList.add('found'), 350);
+      }, 250);
+    });
+  };
+  q.addEventListener('input', render); render();
+  setTimeout(() => q.focus(), 350);
 }
 function recentCards(){
   const all = [];
@@ -747,7 +1007,7 @@ function cardForm(t, {dest, slot, onDone, entry}={}){
     b.slots[at] = {id:uid(), t, ...data, added:Date.now()};
     for (let i = 0; i < b.slots.length; i++) if (b.slots[i] === undefined) b.slots[i] = null;
     save(); closeSheet(w); onDone && onDone();
-    if (curBinder === b.id) { curPage = Math.floor(at / PER_PAGE); renderBinder(at); }
+    if (curBinder === b.id) { curPage = Math.floor(at / per(b)); renderBinder(at); }
     renderHome(); toast(`Ajoutée à ${b.name}`, t);
   };
 }
