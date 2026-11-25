@@ -485,7 +485,25 @@ function imgCands(t, q='low'){
   add(t.image);
   if (t.image && /\/(fr|ja)\//.test(t.image)) add(t.image.replace(/\/(fr|ja)\//, '/en/'));
   if (IMGC[k]) add(IMGC[k]);
+  // Dernière source : images.pokemontcg.io (images anglaises, très complètes : Galerie Galaroise, Galerie de Dresseurs, Voûte Chromatique…)
+  const pt = ptcgImg(t); if (pt) out.push(q === 'high' ? pt.hi : pt.lo, q === 'high' ? pt.lo : pt.hi);
   return [...new Set(out)];
+}
+// Correspondance des identifiants TCGdex → pokemontcg.io
+//   sv03.5 → sv3pt5 · swsh12.5 → swsh12pt5 · sm11.5 → sm115 · swsh4.5 → swsh45
+//   numéros spéciaux : GG35 → swsh12pt5gg/GG35, TG05 → swsh9tg/TG05, SV050 → swsh45sv/SV050 ; 035 → 35
+function ptcgImg(t){
+  if (!t || isJa(t) || !t.setId || t.localId == null) return null;
+  let set = String(t.setId).toLowerCase(), n = String(t.localId);
+  if (set === 'swshp' || set === 'smp' || set === 'xyp' || set === 'svp') return null; // promos : numérotation différente
+  set = set.replace(/^sv0(\d)/, 'sv$1');
+  set = /^sv/.test(set) || set.startsWith('swsh12.5') ? set.replace('.5', 'pt5') : set.replace('.', '');
+  const m = n.match(/^(GG|TG|SV)(\d+)$/i);
+  if (m) { const suf = m[1].toLowerCase(); if (!set.endsWith(suf)) set += suf; n = m[1].toUpperCase() + m[2]; }
+  if (set === 'sm115sv') set = 'sma'; // Destinées Occultes, Voûte Chromatique
+  else if (/^\d+$/.test(n)) n = String(parseInt(n, 10));
+  const b = `https://images.pokemontcg.io/${set}/${encodeURIComponent(n)}`;
+  return {lo:`${b}.png`, hi:`${b}_hires.png`};
 }
 const phHtml = (t, k) => `<div class="ph" data-k="${esc(k)}"><span class="phi">${I.camera}</span>${esc(t.name)}</div>`;
 function cardImgHtml(t, q='low'){

@@ -1,6 +1,6 @@
 // PokéFolio service worker : app hors ligne + cache des images de cartes
 // v5 : on ne met plus en cache que les images réellement chargées (avant, une image ratée restait cassée pour toujours)
-const SHELL = 'classeurs-shell-v5', IMG = 'classeurs-img-v2';
+const SHELL = 'classeurs-shell-v6', IMG = 'classeurs-img-v2';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(SHELL).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => e.waitUntil(
