@@ -268,6 +268,28 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 .empty-state .btn{width:auto;display:inline-flex;padding:0 22px;margin-top:18px;height:48px}
 
 /* toast */
+.ph{position:relative;align-items:flex-start;gap:6px}
+.ph .phi{width:22px;height:22px;opacity:.55}.ph .phi svg{width:100%;height:100%}
+.toast .tact{margin-left:6px;padding:6px 12px;border-radius:99px;background:var(--on-ink);color:var(--ink);font-weight:700;font-size:13px;pointer-events:auto}
+.pm-sub{color:var(--muted);font-size:14px;line-height:1.45;margin:-8px 0 12px}
+.pm-tools{display:flex;gap:8px;flex-wrap:wrap}
+.pm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}
+@media(min-width:560px){.pm-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.pm-page{display:flex;flex-direction:column;gap:8px;text-align:left;color:inherit;transition:transform .25s var(--spring)}
+.pm-page:active{transform:scale(.97)}
+.pm-sheet{position:relative;display:block;aspect-ratio:var(--ratio,.74);border-radius:6px 10px 10px 6px;background:var(--raised);box-shadow:0 0 0 1px var(--line) inset,0 8px 18px -12px rgba(0,0,0,.45);padding:6% 6% 6% 10%;transition:box-shadow .2s,transform .25s var(--spring)}
+.pm-cells{display:grid;gap:5%;height:100%;align-content:center}
+.pm-cell{aspect-ratio:63/88;border-radius:var(--card-r);background:var(--field);overflow:hidden;box-shadow:0 0 0 1px var(--line) inset}
+.pm-cell img,.pm-cell .ph{width:100%;height:100%;object-fit:cover;font-size:7px;padding:6%}
+.pm-cell .ph .phi{display:none}
+.pm-x{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:var(--down);color:#fff;display:grid;place-items:center;transform:scale(0);transition:transform .3s var(--spring);box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.pm-x svg{width:14px;height:14px}
+.pm-page.sel .pm-sheet{box-shadow:0 0 0 3px var(--down),0 8px 18px -12px rgba(0,0,0,.45);transform:scale(.95)}
+.pm-page.sel .pm-cells{opacity:.45}
+.pm-page.sel .pm-x{transform:scale(1)}
+.pm-lbl{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:baseline}
+.pm-lbl b{color:var(--ink);font-size:13.5px}
+.sheet.full .pm-tools{margin-bottom:2px}
 .toast{position:fixed;left:50%;top:calc(var(--st) + 10px);transform:translate(-50%,-150%);z-index:90;display:flex;align-items:center;gap:10px;padding:8px 16px 8px 8px;border-radius:99px;background:var(--ink);color:var(--on-ink);font-weight:600;font-size:14px;box-shadow:0 12px 30px -10px rgba(0,0,0,.5);transition:transform .5s var(--spring);max-width:calc(100vw - 32px)}
 .toast:not(.show){transform:translate(-50%,calc(-100% - var(--st) - 40px));box-shadow:none;visibility:hidden;transition:transform .5s var(--spring),visibility 0s .5s}
 .toast.show{transform:translate(-50%,0)}
@@ -339,6 +361,8 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const img = (t, q='low') => t && t.image ? `${t.image}/${q}.webp` : '';
 
 const I = {
+  pages:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="8" height="14" rx="1.5"/><rect x="13" y="5" width="8" height="14" rx="1.5"/></svg>',
+  camera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
   more:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
   plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
@@ -447,17 +471,104 @@ function checkHtml(t){
     <a href="${l.ebay}" target="_blank" rel="noopener">eBay vendues ${I.ext}</a>
     <a href="${l.cm}" target="_blank" rel="noopener">Cardmarket ${I.ext}</a></div>`;
 }
-const cardImgHtml = (t, q='low') => t.image
-  ? `<img src="${img(t, q)}" alt="${esc(t.name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:this.alt}))">`
-  : `<div class="ph">${esc(t.name)}</div>`;
+/* ---------- Images : plusieurs sources, de la plus fiable à la plus générique ----------
+   1. ta photo (IndexedDB)  2. ton lien  3. TCGdex dans la langue de la carte (webp, png, haute déf.)
+   4. TCGdex en anglais  5. image retrouvée via l'API (fr/en)  6. illustration avec le nom */
+const IMGC_KEY = 'pokefolio.imgcache';
+let IMGC = {}; try { IMGC = JSON.parse(localStorage.getItem(IMGC_KEY) || '{}'); } catch {}
+const PHOTO = {}, TREG = {}, RESOLVING = new Set(), RESOLVED = new Set();
+function imgCands(t, q='low'){
+  const k = ownKey(t), out = [];
+  if (PHOTO[k]) out.push(PHOTO[k]);
+  if (S.imgs && S.imgs[k]) out.push(S.imgs[k]);
+  const add = b => { if (!b) return; out.push(`${b}/${q}.webp`, `${b}/${q}.png`); if (q === 'low') out.push(`${b}/high.webp`); };
+  add(t.image);
+  if (t.image && /\/(fr|ja)\//.test(t.image)) add(t.image.replace(/\/(fr|ja)\//, '/en/'));
+  if (IMGC[k]) add(IMGC[k]);
+  return [...new Set(out)];
+}
+const phHtml = (t, k) => `<div class="ph" data-k="${esc(k)}"><span class="phi">${I.camera}</span>${esc(t.name)}</div>`;
+function cardImgHtml(t, q='low'){
+  const k = ownKey(t); TREG[k] = t;
+  const c = imgCands(t, q);
+  if (!c.length) { resolveImg(t); return phHtml(t, k); }
+  return `<img src="${esc(c[0])}" alt="${esc(t.name)}" loading="lazy" decoding="async" data-k="${esc(k)}" data-q="${q}" data-i="0">`;
+}
+document.addEventListener('error', e => {
+  const im = e.target; if (im.tagName !== 'IMG' || !im.dataset.k) return;
+  const t = TREG[im.dataset.k]; if (!t) return;
+  const c = imgCands(t, im.dataset.q), i = +im.dataset.i + 1;
+  if (i < c.length) { im.dataset.i = i; im.src = c[i]; return; }
+  const ph = document.createElement('div'); ph.innerHTML = phHtml(t, im.dataset.k); im.replaceWith(ph.firstChild);
+  resolveImg(t);
+}, true);
+// Dernier recours : redemander la carte à l'API (en anglais, puis dans sa langue) pour trouver une image.
+async function resolveImg(t){
+  const k = ownKey(t); if (RESOLVING.has(k) || RESOLVED.has(k) || !t.id) return;
+  RESOLVING.add(k);
+  const tried = new Set([t.image, IMGC[k]].filter(Boolean).flatMap(b => [b, b.replace(/\/(fr|ja)\//, '/en/')]));
+  for (const L of ['en', t.lang || 'fr']) {
+    try {
+      const r = await fetch(`${api(L)}/cards/${encodeURIComponent(t.id)}`); if (!r.ok) continue;
+      const c = await r.json();
+      if (c.image && !tried.has(c.image)) { IMGC[k] = c.image; try { localStorage.setItem(IMGC_KEY, JSON.stringify(IMGC)); } catch {} refreshImgs(k); break; }
+    } catch {}
+  }
+  RESOLVING.delete(k); RESOLVED.add(k);
+}
+function refreshImgs(k){
+  const t = TREG[k]; if (!t) return;
+  $$(`.ph[data-k="${CSS.escape(k)}"], img[data-k="${CSS.escape(k)}"]`).forEach(el => {
+    const q = el.dataset.q || (el.closest('.holo') ? 'high' : 'low'), d = document.createElement('div');
+    d.innerHTML = cardImgHtml(t, q); el.replaceWith(d.firstChild);
+  });
+}
+
+/* ---------- Photos perso (IndexedDB) ---------- */
+const PDB = new Promise(res => { try { const r = indexedDB.open('pokefolio-photos', 1); r.onupgradeneeded = () => r.result.createObjectStore('p'); r.onsuccess = () => res(r.result); r.onerror = () => res(null); } catch { res(null); } });
+async function pdb(mode, fn){ const d = await PDB; if (!d) throw new Error('stockage indisponible'); return new Promise((res, rej) => { const tx = d.transaction('p', mode), st = tx.objectStore('p'), rq = fn(st); tx.oncomplete = () => res(rq && rq.result); tx.onerror = () => rej(tx.error); }); }
+async function loadPhotos(){
+  try { const d = await PDB; if (!d) return; const keys = await pdb('readonly', st => st.getAllKeys());
+    for (const k of keys) { const b = await pdb('readonly', st => st.get(k)); if (b) PHOTO[k] = URL.createObjectURL(b); }
+    if (keys.length) { renderHome(); renderWish(); if (curBinder) renderBinder(); } } catch {}
+}
+function shrink(file){
+  return new Promise((res, rej) => { const u = URL.createObjectURL(file), im = new Image();
+    im.onload = () => { const sc = Math.min(1, 900 / Math.max(im.width, im.height)), cv = document.createElement('canvas');
+      cv.width = Math.round(im.width * sc); cv.height = Math.round(im.height * sc); cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(u); cv.toBlob(b => b ? res(b) : rej(new Error('encodage')), 'image/jpeg', .85); };
+    im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('format non lu')); }; im.src = u; });
+}
+// Feuille « Changer l'image » : photo, lien collé ou retour à l'image officielle
+function imageSheet(t, onDone){
+  const k = ownKey(t), custom = PHOTO[k] || (S.imgs && S.imgs[k]);
+  const w = openSheet(`<h3>Image de la carte</h3>
+    <p class="pm-sub">Si l'image officielle ne charge pas, prends ta carte en photo ou colle le lien d'une image (clic long sur une image → « Copier le lien »).</p>
+    <div class="actions">
+      <label class="btn" for="ipick">${I.camera}Prendre ou choisir une photo</label><input type="file" id="ipick" accept="image/*" hidden>
+      <div class="row"><input class="txt" id="iurl" type="url" inputmode="url" placeholder="https://…/carte.jpg" value="${esc(S.imgs?.[k] || '')}"><button class="btn ghost" id="iok" style="flex:0 0 86px">OK</button></div>
+      ${custom ? '<button class="btn danger" id="ireset">Revenir à l’image officielle</button>' : ''}
+    </div>`);
+  const done = msg => { closeSheet(w); refreshImgs(k); renderHome(); renderWish(); if (curBinder) renderBinder(); toast(msg, t); onDone && onDone(); };
+  $('#ipick', w).onchange = async e => { const f = e.target.files?.[0]; if (!f) return;
+    try { const b = await shrink(f); await pdb('readwrite', st => st.put(b, k)); if (PHOTO[k]) URL.revokeObjectURL(PHOTO[k]); PHOTO[k] = URL.createObjectURL(b); done('Photo enregistrée'); }
+    catch (err) { toast('Photo non enregistrée : ' + (err.message || err)); } };
+  $('#iok', w).onclick = () => { const u = $('#iurl', w).value.trim();
+    if (u && !/^https?:\/\//i.test(u)) { toast('Le lien doit commencer par https://'); return; }
+    S.imgs = S.imgs || {}; if (u) S.imgs[k] = u; else delete S.imgs[k]; save(); done(u ? 'Lien enregistré' : 'Lien retiré'); };
+  const r = $('#ireset', w);
+  if (r) r.onclick = async () => { try { await pdb('readwrite', st => st.delete(k)); } catch {} if (PHOTO[k]) URL.revokeObjectURL(PHOTO[k]); delete PHOTO[k]; if (S.imgs) delete S.imgs[k]; save(); done('Image officielle rétablie'); };
+}
 
 /* ---------- Toast ---------- */
 let toastT;
-function toast(text, t){
-  const el = $('#toast');
-  el.innerHTML = (t && t.image ? `<img src="${img(t)}" alt="">` : `<span class="dot">${I.check.replace('<svg','<svg width="14" height="14"')}</span>`) + `<span>${esc(text)}</span>`;
+function toast(text, t, action){
+  const el = $('#toast'), src = t && imgCands(t)[0];
+  el.innerHTML = (src ? `<img src="${esc(src)}" alt="" onerror="this.remove()">` : `<span class="dot">${I.check.replace('<svg','<svg width="14" height="14"')}</span>`) + `<span>${esc(text)}</span>`
+    + (action ? `<button class="tact">${esc(action.label)}</button>` : '');
+  if (action) $('.tact', el).onclick = () => { el.classList.remove('show'); action.fn(); };
   el.classList.add('show'); clearTimeout(toastT);
-  toastT = setTimeout(() => el.classList.remove('show'), 2400);
+  toastT = setTimeout(() => el.classList.remove('show'), action ? 6000 : 2400);
 }
 
 /* ---------- Sheets ---------- */
@@ -560,6 +671,7 @@ function editBinder(b){
     <div class="field"><span class="flabel">Couverture</span><div class="swatches">${COLORS.map(c => `<button class="sw ${c.id === color ? 'on' : ''}" data-c="${c.id}" style="--c:${c.c}" aria-label="${c.name}"></button>`).join('')}</div></div>
     <div class="actions">
       <button class="btn" id="bsave">${isNew ? 'Créer le classeur' : 'Enregistrer'}</button>
+      ${!isNew && filledPages(b).length ? `<button class="btn ghost" id="bpages">${I.pages}Gérer les pages (${filledPages(b).length})</button>` : ''}
       ${!isNew && S.binders.length > 1 ? '<button class="btn danger" id="bdel">Supprimer le classeur</button>' : ''}
     </div>`);
   $$('.sw', w).forEach(s => s.onclick = () => { color = s.dataset.c; $$('.sw', w).forEach(x => x.classList.toggle('on', x === s)); });
@@ -572,6 +684,8 @@ function editBinder(b){
     save(); closeSheet(w); renderHome(); if (curBinder) renderBinder();
     toast(isNew ? 'Classeur créé' : 'Classeur enregistré');
   };
+  const bp = $('#bpages', w);
+  if (bp) bp.onclick = () => { closeSheet(w); setTimeout(() => managePages(b), 250); };
   const del = $('#bdel', w);
   if (del) del.onclick = () => {
     if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = `Confirmer : supprimer ${bStats(b).n} carte(s)`; return; }
@@ -615,12 +729,14 @@ function renderBinder(dropAt){
       <div class="bactions">
         <button class="pill" id="badd">${I.plus}Ajouter</button>
         <button class="pill light" id="bshow">${I.star}Vitrine</button>
+        ${filledPages(b).length > 1 ? `<button class="pill light" id="bpm" aria-label="Gérer les pages">${I.pages}Pages</button>` : ''}
       </div>
     </div>`;
   $('#bback').onclick = closeBinder;
   $('#bedit').onclick = () => editBinder(b);
   $('#badd').onclick = () => openSearch({binderId:b.id});
   $('#bshow').onclick = () => showcase(b);
+  if ($('#bpm')) $('#bpm').onclick = () => managePages(b);
   const pages = $('#pages');
   pages.scrollLeft = curPage * pages.clientWidth;
   pages.addEventListener('scroll', () => requestAnimationFrame(() => pageFx(pages)), {passive:true});
@@ -737,6 +853,58 @@ function closeBinder(){
   $('#tabbar').classList.remove('hide');
   if (reduced) return done();
   view.animate([{opacity:1, transform:'scale(1)'}, {opacity:0, transform:'scale(.96)'}], {duration:260, easing:'ease-in'}).onfinish = done;
+}
+
+/* ---------- Gestion des pages : supprimer plusieurs pages d'un coup ---------- */
+// Pages affichables : toutes sauf la dernière page libre (toujours vide, ajoutée automatiquement)
+function filledPages(b){
+  const n = per(b), pc = pageCount(b), out = [];
+  for (let p = 0; p < pc; p++) { const cards = b.slots.slice(p * n, p * n + n).filter(Boolean).length; if (p < pc - 1 || cards) out.push({p, cards}); }
+  return out;
+}
+function managePages(b){
+  const n = per(b), sel = new Set();
+  const w = openSheet(`
+    <h3>Pages de « ${esc(b.name)} »</h3>
+    <p class="pm-sub">Touche les pages à supprimer. Les pages suivantes remontent pour combler le vide.</p>
+    <div class="pm-tools"><button class="chip" data-s="empty">Pages vides</button><button class="chip" data-s="all">Tout</button><button class="chip" data-s="none">Aucune</button></div>
+    <div class="results pad" id="pmres"><div class="pm-grid" id="pmgrid"></div></div>
+    <div class="addbar" id="pmbar"><button class="btn danger" id="pmdel"></button></div>`, {full:true, onClose:() => { if (curBinder) renderBinder(); }});
+  const grid = $('#pmgrid', w), bar = $('#pmbar', w), del = $('#pmdel', w);
+  const draw = () => {
+    const pages = filledPages(b);
+    grid.innerHTML = pages.length ? pages.map(({p, cards}) => {
+      const cells = Array.from({length:n}, (_, j) => { const e = b.slots[p * n + j]; return `<span class="pm-cell">${e ? cardImgHtml(e.t) : ''}</span>`; }).join('');
+      return `<button class="pm-page ${sel.has(p) ? 'sel' : ''}" data-p="${p}" aria-pressed="${sel.has(p)}">
+        <span class="pm-sheet" style="--ratio:${ratio(b)}"><span class="pm-cells" style="grid-template-columns:repeat(${cols(b)},minmax(0,1fr))">${cells}</span><span class="pm-x">${I.x}</span></span>
+        <span class="pm-lbl"><b>Page ${p + 1}</b>${cards ? `${cards} carte${cards > 1 ? 's' : ''}` : 'vide'}</span></button>`;
+    }).join('') : '<p class="hint">Ce classeur n’a pas encore de page remplie.</p>';
+    $$('.pm-page', grid).forEach(el => el.onclick = () => { const p = +el.dataset.p; sel.has(p) ? sel.delete(p) : sel.add(p); el.classList.toggle('sel', sel.has(p)); el.setAttribute('aria-pressed', sel.has(p)); upd(); });
+    upd();
+  };
+  const lost = () => [...sel].reduce((a, p) => a + b.slots.slice(p * n, p * n + n).filter(Boolean).length, 0);
+  const upd = () => {
+    del.classList.remove('armed'); bar.classList.toggle('show', sel.size > 0);
+    const c = lost();
+    del.textContent = `Supprimer ${sel.size} page${sel.size > 1 ? 's' : ''}${c ? ` · ${c} carte${c > 1 ? 's' : ''}` : ''}`;
+  };
+  $$('.pm-tools .chip', w).forEach(c => c.onclick = () => {
+    const pages = filledPages(b); sel.clear();
+    if (c.dataset.s === 'all') pages.forEach(x => sel.add(x.p));
+    if (c.dataset.s === 'empty') { pages.filter(x => !x.cards).forEach(x => sel.add(x.p)); if (!sel.size) toast('Aucune page vide'); }
+    draw();
+  });
+  del.onclick = () => {
+    const c = lost();
+    if (c && !del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = `Confirmer : ${c} carte${c > 1 ? 's' : ''} retirée${c > 1 ? 's' : ''}`; return; }
+    const before = b.slots.slice(), pc = pageCount(b), out = [];
+    for (let p = 0; p < pc; p++) if (!sel.has(p)) for (let j = 0; j < n; j++) out.push(b.slots[p * n + j] ?? null);
+    while (out.length && !out[out.length - 1]) out.pop();
+    b.slots = out; const k = sel.size; save(); curPage = 0; closeSheet(w);
+    toast(`${k} page${k > 1 ? 's' : ''} supprimée${k > 1 ? 's' : ''}`, null, {label:'Annuler', fn:() => { b.slots = before; save(); if (curBinder) renderBinder(); renderHome(); toast('Pages restaurées'); }});
+    renderHome();
+  };
+  draw();
 }
 
 /* ---------- Showcase (pour capture Insta) ---------- */
@@ -1067,6 +1235,7 @@ function cardDetail(b, i){
     ${checkHtml(t)}
     <div class="actions">
       <div class="row"><button class="btn ghost" id="dedit">Modifier</button><button class="btn ghost" id="dmove">Déplacer</button></div>
+      <button class="btn ghost" id="dimg">${I.camera}Changer l’image</button>
       <button class="btn danger" id="ddel">Retirer du classeur</button>
     </div>`, {onClose:() => renderBinder()});
   holo($('.holo', w));
@@ -1079,6 +1248,7 @@ function cardDetail(b, i){
   $('#db', w).oninput = upd; $('#dc', w).oninput = upd; upd();
   $('#dedit', w).onclick = () => cardForm(t, {dest:b.id, entry:e, onDone:() => closeSheet(w)});
   $('#dmove', w).onclick = () => moveTo(b, i, w);
+  $('#dimg', w).onclick = () => imageSheet(t, () => { const h = $('.holo', w); if (h) h.innerHTML = cardImgHtml(t, 'high'); });
   const del = $('#ddel', w);
   del.onclick = () => {
     if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Confirmer le retrait'; return; }
@@ -1122,10 +1292,12 @@ function wishDetail(i){
     ${checkHtml(t)}
     <div class="actions">
       <button class="btn" id="got">${I.check}Je l’ai !</button>
+      <button class="btn ghost" id="wimg">${I.camera}Changer l’image</button>
       <button class="btn danger" id="wdel">Retirer de la wishlist</button>
     </div>`, {onClose:renderWish});
   holo($('.holo', w));
   $('#wt', w).oninput = e => { x.target = num(e.target.value); save(); };
+  $('#wimg', w).onclick = () => imageSheet(t, () => { const h = $('.holo', w); if (h) h.innerHTML = cardImgHtml(t, 'high'); });
   $('#got', w).onclick = () => {
     const h = $('.holo', w);
     if (!reduced) h.animate([{transform:'rotateY(0) scale(1)'}, {transform:'rotateY(180deg) scale(1.08)'}, {transform:'rotateY(360deg) scale(1)'}], {duration:700, easing:'cubic-bezier(.45,0,.2,1)'});
@@ -1188,7 +1360,7 @@ $$('.tab[data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab));
 $('#addBtn').onclick = () => openSearch(tab === 'wish' ? {wish:true} : {});
 
 /* ---------- Init ---------- */
-renderHome(); renderWish(); loadSets();
+renderHome(); renderWish(); loadSets(); loadPhotos();
 if ('serviceWorker' in navigator && location.protocol === 'https:') { try { navigator.serviceWorker.register('sw.js').catch(() => {}); } catch {} }
 </script>
 </body>
