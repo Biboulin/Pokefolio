@@ -87,6 +87,8 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 .tab{display:flex;align-items:center;gap:7px;height:46px;padding:0 18px;border-radius:99px;font-weight:600;font-size:14px;color:var(--muted);transition:background .25s,color .25s}
 .tab svg{width:20px;height:20px}
 .tab.on{background:var(--ink);color:var(--on-ink)}
+.tab:not(.on):not(.add){width:46px;padding:0;justify-content:center}
+.tab:not(.on) .tl{display:none}
 .tab.add{width:46px;padding:0;justify-content:center;background:linear-gradient(135deg,#FFD25E,#F0A92A);color:#3B2600;box-shadow:0 4px 12px -4px #E5A12A}
 .tab.add svg{width:22px;height:22px}
 
@@ -253,6 +255,57 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 .stepper span{font-weight:700;font-variant-numeric:tabular-nums}
 .actions{display:flex;flex-direction:column;gap:10px}
 
+/* gradées : slabs */
+.ggrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}
+@media(min-width:620px){.ggrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.gitem{text-align:left;color:inherit}
+.slab{--gc:#C8102E;position:relative;display:flex;flex-direction:column;aspect-ratio:.62;border-radius:12px;padding:6%;background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(225,229,238,.85) 45%,rgba(255,255,255,.9));box-shadow:0 0 0 1px rgba(20,24,40,.12),0 1px 0 rgba(255,255,255,.9) inset,0 18px 30px -16px rgba(20,24,40,.55);overflow:hidden;transition:transform .3s var(--spring)}
+[data-theme=dark] .slab,.dark .slab{background:linear-gradient(150deg,#3a3f5a,#23263a 45%,#33384f);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 18px 30px -16px rgba(0,0,0,.8)}
+.slab:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.35) 48%,transparent 60%);pointer-events:none}
+.gitem:active .slab{transform:scale(.97)}
+.slabel{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px;background:#fff;border-radius:5px;padding:5px 6px;box-shadow:0 0 0 1.5px var(--gc) inset;color:#141414;min-height:15%}
+.slabel .gco{background:var(--gc);color:#fff;font-family:var(--display);font-weight:700;font-size:9px;padding:3px 4px;border-radius:3px;letter-spacing:.02em;white-space:nowrap}
+.slabel .gtx{min-width:0;font-size:8.5px;line-height:1.2;font-weight:600}
+.slabel .gtx b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px}
+.slabel .gtx small{display:block;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.slabel .gnum{text-align:right;font-family:var(--display);font-weight:700;font-size:17px;line-height:1;color:var(--gc)}
+.slabel .gnum small{display:block;font-size:6.5px;letter-spacing:.04em;color:#444;margin-top:2px}
+.swin{flex:1;display:flex;align-items:center;justify-content:center;margin-top:7%;border-radius:6px;background:rgba(20,24,40,.06);padding:5%;min-height:0}
+.swin img,.swin .ph{max-height:100%;width:auto;aspect-ratio:63/88;object-fit:cover;border-radius:var(--card-r);box-shadow:0 6px 14px -6px rgba(0,0,0,.45)}
+.swin .ph{height:100%;font-size:10px}
+.slab.photo{padding:0;background:#111}.slab.photo img{width:100%;height:100%;object-fit:cover}
+.gmeta{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin-top:10px;font-size:13px}
+.gmeta b{font-family:var(--display);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+.gmeta .delta{font-size:12px}
+.ghero{width:min(62vw,250px);margin:6px auto 18px}
+.ghero .slabel .gtx{font-size:11px}.ghero .slabel .gtx b{font-size:12px}.ghero .slabel .gnum{font-size:24px}.ghero .slabel .gco{font-size:11px}.ghero .slabel .gnum small{font-size:8px}
+.cardpick{display:flex;align-items:center;gap:12px;width:100%;background:var(--field);border-radius:16px;padding:10px;text-align:left;color:inherit}
+.cardpick .thumb{width:46px;flex:none}
+.cardpick b{display:block;font-size:15px}.cardpick small{color:var(--muted);font-size:13px}
+.cardpick .go{margin-left:auto;color:var(--muted);font-weight:600;font-size:13px;white-space:nowrap}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.chips-wrap .chip.on{background:var(--ink);color:var(--on-ink)}
+.gradeq{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+
+/* scellé */
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}
+@media(min-width:620px){.sgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.sitem{text-align:left;color:inherit}
+.sbox{position:relative;display:block;width:100%;aspect-ratio:1;border-radius:18px;overflow:hidden;background:var(--surface);box-shadow:0 0 0 1px var(--line),0 16px 28px -18px rgba(20,24,40,.6);transition:transform .3s var(--spring)}
+.sitem:active .sbox{transform:scale(.97)}
+.sbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.sbox svg.pack{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sbox .qty{position:absolute;top:8px;right:8px;font-family:var(--display);font-weight:700;font-size:12px;padding:4px 8px;border-radius:99px;background:rgba(0,0,0,.72);color:#fff}
+.sbox .kind{position:absolute;left:8px;top:8px;font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.92);color:#151827}
+.sitem .n{font-size:14px;font-weight:600;margin-top:10px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sitem .m{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sitem .v{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px}
+.sitem .v b{font-family:var(--display);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+.shero{width:min(60vw,230px);margin:4px auto 18px}
+.shero .sbox{border-radius:22px}
+.mediarow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:-6px 0 18px}
+.mediarow .btn{height:44px;font-size:14px;border-radius:13px}
+
 /* wishlist */
 .wgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 12px}
 .wcard{text-align:left}
@@ -318,13 +371,17 @@ body.in-binder .scrim,html[data-theme=dark] .scrim{opacity:0}
 <body>
 
 <main id="home" class="view"></main>
+<main id="graded" class="view" hidden></main>
+<main id="sealed" class="view" hidden></main>
 <main id="wish" class="view" hidden></main>
 <section id="binder" class="bview" hidden></section>
 
 <nav class="tabbar" id="tabbar">
-  <button class="tab on" data-tab="home" aria-label="Classeurs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="15" height="18" rx="2.5"/><path d="M8 3v18M4 8h1.5M4 12h1.5M4 16h1.5"/></svg>Classeurs</button>
+  <button class="tab on" data-tab="home" aria-label="Classeurs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="15" height="18" rx="2.5"/><path d="M8 3v18M4 8h1.5M4 12h1.5M4 16h1.5"/></svg><span class="tl">Classeurs</span></button>
+  <button class="tab" data-tab="graded" aria-label="Cartes gradées"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M5 7.5h14"/><rect x="8" y="10" width="8" height="8.5" rx="1"/></svg><span class="tl">Gradées</span></button>
   <button class="tab add" id="addBtn" aria-label="Ajouter une carte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
-  <button class="tab" data-tab="wish" aria-label="Wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20Z"/></svg>Wishlist</button>
+  <button class="tab" data-tab="sealed" aria-label="Scellé"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg><span class="tl">Scellé</span></button>
+  <button class="tab" data-tab="wish" aria-label="Wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20Z"/></svg><span class="tl">Wishlist</span></button>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -389,9 +446,11 @@ applyTheme();
 
 /* ---------- Store ---------- */
 const KEY = 'pokefolio.v1';
-function seed(){ return {v:1, binders:[{id:uid(), name:'Ma collection', color:'cobalt', kind:'collection', slots:[]}], wishlist:[]}; }
+function seed(){ return {v:1, binders:[{id:uid(), name:'Ma collection', color:'cobalt', kind:'collection', slots:[]}], wishlist:[], graded:[], sealed:[]}; }
+const fixState = () => { S.graded = S.graded || []; S.sealed = S.sealed || []; S.wishlist = S.wishlist || []; };
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { S = seed(); }
+fixState();
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} }
 const binderById = id => S.binders.find(b => b.id === id);
 
@@ -548,7 +607,7 @@ async function pdb(mode, fn){ const d = await PDB; if (!d) throw new Error('stoc
 async function loadPhotos(){
   try { const d = await PDB; if (!d) return; const keys = await pdb('readonly', st => st.getAllKeys());
     for (const k of keys) { const b = await pdb('readonly', st => st.get(k)); if (b) PHOTO[k] = URL.createObjectURL(b); }
-    if (keys.length) { renderHome(); renderWish(); if (curBinder) renderBinder(); } } catch {}
+    if (keys.length) { renderAll(); if (curBinder) renderBinder(); } } catch {}
 }
 function shrink(file){
   return new Promise((res, rej) => { const u = URL.createObjectURL(file), im = new Image();
@@ -663,7 +722,7 @@ function renderHome(){
   }).join('');
   $('#home').innerHTML = `
     <div class="top"><h1>Classeurs</h1><div class="topbtns"><button class="icon-btn" id="find" aria-label="Chercher dans mes cartes">${I.search}</button><button class="icon-btn" id="settings" aria-label="Réglages">${I.gear}</button></div></div>
-    <p class="summary">${n ? `<strong>${n} carte${n > 1 ? 's' : ''}</strong> dans ${S.binders.length} classeur${S.binders.length > 1 ? 's' : ''}${val ? `<br>Valeur estimée <strong>${eur(val)}</strong> ${deltaHtml(buy, priced)}` : ''}` : 'Ton premier classeur t’attend. Ajoute une carte avec le bouton jaune.'}</p>
+    <p class="summary">${n ? `<strong>${n} carte${n > 1 ? 's' : ''}</strong> dans ${S.binders.length} classeur${S.binders.length > 1 ? 's' : ''}${val ? `<br>Valeur estimée <strong>${eur(val)}</strong> ${deltaHtml(buy, priced)}` : ''}` : 'Ton premier classeur t’attend. Ajoute une carte avec le bouton jaune.'}${(() => { const g = sumUp(S.graded || []).val, x = sumUp(S.sealed || []).val; return g || x ? `<br>Avec gradées et scellé <strong>${eur(val + g + x)}</strong>` : ''; })()}</p>
     <div class="shelf">${covers}
       <button class="binder" id="newBinder"><span class="cover new"><span>${I.plus}Nouveau classeur</span></span><span class="bmeta">&nbsp;</span></button>
     </div>`;
@@ -951,7 +1010,7 @@ let lastDest = null, lastMode = 'name', lastLang = 'fr';
 function openSearch(ctx={}){
   let dest = ctx.wish ? 'wish' : (ctx.binderId || lastDest || curBinder || S.binders[0].id);
   if (dest !== 'wish' && !binderById(dest)) dest = S.binders[0].id;
-  const fixedSlot = ctx.slot != null;
+  const fixedSlot = ctx.slot != null || !!ctx.pick;
   let mode = fixedSlot || ctx.q ? 'name' : lastMode, lang = lastLang, curSet = null, setCards = [], sel = new Set(), hideOwned = false;
   const w = openSheet(`
     <div class="sbar"><div class="sinput">${I.search}<input class="txt" id="q" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false"></div><button class="link" id="qcancel">Annuler</button></div>
@@ -999,7 +1058,9 @@ function openSearch(ctx={}){
     bindResults(recent);
   };
   const bindResults = list => $$('[data-r]', res).forEach(c => c.onclick = () => {
-    const t = list[+c.dataset.r]; const d = fixedSlot ? ctx.binderId : dest;
+    const t = list[+c.dataset.r];
+    if (ctx.pick) { closeSheet(w); ctx.pick(t); return; }
+    const d = fixedSlot ? ctx.binderId : dest;
     cardForm(t, {dest:d, slot:ctx.slot, onDone:() => closeSheet(w)});
   });
   let timer, ctrl;
@@ -1334,6 +1395,221 @@ function wishDetail(i){
   };
 }
 
+/* =====================================================================
+   GRADÉES & SCELLÉ
+   ===================================================================== */
+function renderAll(){ renderHome(); renderGraded(); renderSealed(); renderWish(); }
+const qtyOf = x => x.qty || 1;
+const valueOf = x => (x.cur ?? x.buy ?? 0) * qtyOf(x);
+function sumUp(list){
+  let val = 0, buy = 0, priced = 0;
+  for (const x of list) { val += valueOf(x); if (x.buy != null && x.cur != null) { buy += x.buy * qtyOf(x); priced += x.cur * qtyOf(x); } }
+  return {val, buy, priced};
+}
+
+/* --- photos et liens pour un objet (slab, produit scellé) --- */
+function mediaSrc(key, obj){ return PHOTO[key] || obj.img || null; }
+function mediaSheet(key, obj, onDone){
+  const has = !!mediaSrc(key, obj);
+  const w = openSheet(`<h3>Photo</h3>
+    <p class="pm-sub">Prends une photo ou colle le lien d'une image trouvée sur le web (appui long sur l'image → « Copier le lien »).</p>
+    <div class="actions">
+      <label class="btn" for="mpick">${I.camera}Prendre ou choisir une photo</label><input type="file" id="mpick" accept="image/*" hidden>
+      <div class="row"><input class="txt" id="murl" type="url" inputmode="url" placeholder="https://…/image.jpg" value="${esc(obj.img || '')}"><button class="btn ghost" id="mok" style="flex:0 0 86px">OK</button></div>
+      ${has ? '<button class="btn danger" id="mdel">Retirer la photo</button>' : ''}
+    </div>`);
+  const done = m => { closeSheet(w); toast(m); onDone && onDone(); };
+  $('#mpick', w).onchange = async e => { const f = e.target.files?.[0]; if (!f) return;
+    try { const b = await shrink(f); await pdb('readwrite', st => st.put(b, key)); if (PHOTO[key]) URL.revokeObjectURL(PHOTO[key]); PHOTO[key] = URL.createObjectURL(b); done('Photo enregistrée'); }
+    catch (err) { toast('Photo non enregistrée : ' + (err.message || err)); } };
+  $('#mok', w).onclick = () => { const u = $('#murl', w).value.trim();
+    if (u && !/^https?:\/\//i.test(u)) { toast('Le lien doit commencer par https://'); return; }
+    obj.img = u || null; save(); done(u ? 'Lien enregistré' : 'Lien retiré'); };
+  const d = $('#mdel', w);
+  if (d) d.onclick = async () => { await dropMedia(key, obj); save(); done('Photo retirée'); };
+}
+async function dropMedia(key, obj){ try { await pdb('readwrite', st => st.delete(key)); } catch {} if (PHOTO[key]) URL.revokeObjectURL(PHOTO[key]); delete PHOTO[key]; if (obj) obj.img = null; }
+
+/* --- GRADÉES --- */
+const GRADERS = [
+  {id:'PSA', c:'#C8102E'}, {id:'PCA', c:'#0B6E4F'}, {id:'CGC', c:'#1B3F8B'}, {id:'BGS', c:'#1E1E1E'},
+  {id:'Collect Aura', c:'#6D28D9'}, {id:'SGC', c:'#3A3A3A'}, {id:'Autre', c:'#6A6F84'},
+];
+const graderColor = g => (GRADERS.find(x => x.id === g) || GRADERS[GRADERS.length - 1]).c;
+const GRADE_TXT = {10:'GEM MT', 9.5:'MINT+', 9:'MINT', 8.5:'NM-MT+', 8:'NM-MT', 7:'NM', 6:'EX-MT', 5:'EX', 4:'VG-EX', 3:'VG', 2:'GOOD', 1:'POOR'};
+const gradeTxt = n => GRADE_TXT[+n] || '';
+const fmtGrade = n => n == null || n === '' ? '—' : String(n).replace('.', ',');
+function certLink(g){
+  if (!g.cert) return null;
+  const c = encodeURIComponent(g.cert);
+  if (g.grader === 'PSA') return `https://www.psacard.com/cert/${c}`;
+  if (g.grader === 'CGC') return `https://www.cgccards.com/certlookup/${c}/`;
+  return null;
+}
+function slabHtml(g){
+  const key = 'g:' + g.id, ph = mediaSrc(key, g);
+  if (ph) return `<span class="slab photo"><img src="${esc(ph)}" alt="" onerror="this.parentNode.classList.remove('photo');this.remove()"></span>`;
+  const t = g.t, name = t ? t.name : (g.name || 'Carte'), sub = t ? `${t.setName || ''} ${numLabel(t)}` : (g.sub || '');
+  return `<span class="slab" style="--gc:${graderColor(g.grader)}">
+    <span class="slabel"><span class="gco">${esc(g.grader === 'Collect Aura' ? 'AURA' : g.grader)}</span><span class="gtx"><b>${esc(name)}</b><small>${esc(sub.trim())}</small></span><span class="gnum">${esc(fmtGrade(g.grade))}<small>${esc(gradeTxt(g.grade))}</small></span></span>
+    <span class="swin">${t ? cardImgHtml(t) : `<div class="ph">${esc(name)}</div>`}</span></span>`;
+}
+function renderGraded(){
+  const L = S.graded, st = sumUp(L);
+  $('#graded').innerHTML = `
+    <div class="top"><h1>Gradées</h1>${L.length ? `<button class="icon-btn" id="gadd" aria-label="Ajouter une carte gradée">${I.plus}</button>` : ''}</div>
+    <p class="summary">${L.length ? `<strong>${L.length} carte${L.length > 1 ? 's' : ''} gradée${L.length > 1 ? 's' : ''}</strong>${st.val ? `<br>Valeur estimée <strong>${eur(st.val)}</strong> ${deltaHtml(st.buy, st.priced)}` : ''}` : ''}</p>
+    ${L.length ? `<div class="ggrid">${L.map((g, i) => `<button class="gitem" data-g="${i}">${slabHtml(g)}
+        <span class="gmeta"><b>${g.cur ?? g.buy ? eur(g.cur ?? g.buy) : '— €'}</b>${deltaHtml(g.buy, g.cur)}</span></button>`).join('')}</div>`
+      : `<div class="empty-state"><div class="ill"><span></span><span></span><span></span></div><b>Tes cartes gradées</b>PSA, PCA, CGC, Collect Aura… Range ici tes slabs avec leur note et leur prix.<br><button class="btn" id="gadd">${I.plus}Ajouter une carte gradée</button></div>`}`;
+  const a = $('#gadd'); if (a) a.onclick = () => gradedForm();
+  $$('[data-g]', $('#graded')).forEach(c => c.onclick = () => gradedForm(S.graded[+c.dataset.g]));
+}
+function gradedForm(g){
+  const isNew = !g;
+  const d = g ? {...g} : {id:uid(), t:null, name:'', grader:'PSA', grade:10, cert:'', buy:null, cur:null, img:null, added:Date.now()};
+  const key = 'g:' + d.id;
+  const w = openSheet(`
+    <div class="ghero" id="gprev">${slabHtml(d)}</div>
+    <div class="mediarow"><button class="btn ghost" id="gimg">${I.camera}Photo du slab</button><button class="btn ghost" id="gcardimg">Image de la carte</button></div>
+    <div class="field"><span class="flabel">Carte</span><button class="cardpick" id="gpick"></button></div>
+    <div class="field"><span class="flabel">Société de gradation</span><div class="chips-wrap" id="ggr">${GRADERS.map(x => `<button class="chip ${x.id === d.grader ? 'on' : ''}" data-v="${x.id}">${x.id}</button>`).join('')}</div></div>
+    <div class="row field">
+      <div class="field" style="margin:0;flex:1"><label for="gn">Note</label><input id="gn" class="txt" inputmode="decimal" value="${d.grade ?? ''}" placeholder="10"></div>
+      <div class="field" style="margin:0;flex:1.4"><label for="gc">N° de certificat</label><input id="gc" class="txt" inputmode="numeric" value="${esc(d.cert || '')}" placeholder="Ex. 81234567"></div>
+    </div>
+    <div class="gradeq" id="gq">${[10, 9.5, 9, 8.5, 8, 7].map(n => `<button class="chip" data-n="${n}">${fmtGrade(n)}</button>`).join('')}</div>
+    <div class="prices" style="margin-top:18px">
+      <div class="pbox"><label for="gb">Prix d’achat</label><input id="gb" inputmode="decimal" placeholder="— €" value="${d.buy ?? ''}"></div>
+      <div class="pbox"><label for="gv">Prix actuel</label><input id="gv" inputmode="decimal" placeholder="— €" value="${d.cur ?? ''}"></div>
+    </div>
+    <div id="glinks"></div>
+    <div class="actions">
+      <button class="btn" id="gsave">${isNew ? 'Ajouter aux gradées' : 'Enregistrer'}</button>
+      ${isNew ? '' : '<button class="btn danger" id="gdel">Supprimer</button>'}
+    </div>`, {onClose:renderGraded});
+  const refresh = () => {
+    d.grade = num($('#gn', w).value); d.cert = $('#gc', w).value.trim();
+    $('#gprev', w).innerHTML = slabHtml(d);
+    const t = d.t;
+    $('#gpick', w).innerHTML = t
+      ? `<span class="thumb">${cardImgHtml(t)}</span><span><b>${esc(t.name)}</b><small>${esc(t.setName || '')} ${esc(numLabel(t))}</small></span><span class="go">Changer</span>`
+      : `<span class="thumb"><div class="ph" style="font-size:9px">?</div></span><span><b>Choisir la carte</b><small>Recherche par nom ou par extension</small></span><span class="go">Choisir</span>`;
+    $('#gcardimg', w).style.display = t ? '' : 'none';
+    const q = t ? `${isJa(t) ? (t.alt || t.name) : t.name} ${numLabel(t)} ${d.grader === 'Autre' ? '' : d.grader} ${d.grade ?? ''}` : '';
+    const cl = certLink(d);
+    $('#glinks', w).innerHTML = t ? `<div class="check">
+      <a href="https://www.ebay.fr/sch/i.html?_nkw=${encodeURIComponent(q.trim())}&LH_Sold=1&LH_Complete=1&_sop=13" target="_blank" rel="noopener">eBay vendues ${I.ext}</a>
+      ${cl ? `<a href="${cl}" target="_blank" rel="noopener">Vérifier le certificat ${I.ext}</a>` : `<a href="${priceLinks(t).cm}" target="_blank" rel="noopener">Cardmarket ${I.ext}</a>`}</div>` : '';
+  };
+  refresh();
+  $('#gpick', w).onclick = () => openSearch({pick:t => { d.t = t; refresh(); }});
+  $$('#ggr .chip', w).forEach(c => c.onclick = () => { d.grader = c.dataset.v; $$('#ggr .chip', w).forEach(x => x.classList.toggle('on', x === c)); refresh(); });
+  $$('#gq .chip', w).forEach(c => c.onclick = () => { $('#gn', w).value = String(c.dataset.n).replace('.', ','); refresh(); });
+  $('#gn', w).oninput = refresh; $('#gc', w).oninput = refresh;
+  $('#gimg', w).onclick = () => mediaSheet(key, d, refresh);
+  $('#gcardimg', w).onclick = () => d.t && imageSheet(d.t, refresh);
+  $('#gsave', w).onclick = () => {
+    if (!d.t) { toast('Choisis d’abord la carte'); $('#gpick', w).animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}], {duration:300}); return; }
+    d.buy = num($('#gb', w).value); d.cur = num($('#gv', w).value); d.grade = num($('#gn', w).value); d.cert = $('#gc', w).value.trim();
+    if (isNew) S.graded.unshift(d); else Object.assign(g, d);
+    save(); closeSheet(w); renderGraded(); toast(isNew ? `${d.grader} ${fmtGrade(d.grade)} ajoutée` : 'Carte gradée enregistrée', d.t);
+  };
+  const del = $('#gdel', w);
+  if (del) del.onclick = async () => {
+    if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Confirmer la suppression'; return; }
+    await dropMedia(key); S.graded = S.graded.filter(x => x !== g); save(); closeSheet(w); renderGraded(); toast('Carte gradée supprimée');
+  };
+}
+
+/* --- SCELLÉ --- */
+const SEALED_KINDS = [
+  {id:'Display', c1:'#2D3A8C', c2:'#5B6CF0'}, {id:'ETB', c1:'#7A1F5C', c2:'#E0569B'}, {id:'Coffret', c1:'#0E5E6F', c2:'#2BB3C0'},
+  {id:'Tripack', c1:'#7A4B0E', c2:'#F0A92A'}, {id:'Booster', c1:'#1E3A8A', c2:'#60A5FA'}, {id:'Blister', c1:'#3F3F46', c2:'#A1A1AA'},
+  {id:'Pokébox', c1:'#14532D', c2:'#34D399'}, {id:'Tin', c1:'#44403C', c2:'#D6D3D1'}, {id:'Autre', c1:'#312E81', c2:'#A78BFA'},
+];
+const kindOf = k => SEALED_KINDS.find(x => x.id === k) || SEALED_KINDS[SEALED_KINDS.length - 1];
+function packSVG(x){
+  const k = kindOf(x.kind), gid = 'p' + x.id;
+  const title = esc((x.set || x.name || x.kind || '').slice(0, 22));
+  return `<svg class="pack" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${k.c2}"/><stop offset="1" stop-color="${k.c1}"/></linearGradient></defs>
+    <rect width="200" height="200" fill="url(#${gid})"/>
+    <g transform="translate(100 96)"><path d="M-52 -26 0 -52 52 -26 52 32 0 58 -52 32Z" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.55)" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M-52 -26 0 0 52 -26M0 0v58" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="0" cy="-26" r="11" fill="rgba(255,255,255,.9)"/><path d="M-11 -26h22" stroke="${k.c1}" stroke-width="3"/><circle cx="0" cy="-26" r="4" fill="${k.c1}" stroke="rgba(255,255,255,.9)" stroke-width="2"/></g>
+    <text x="100" y="182" text-anchor="middle" font-family="Unbounded,system-ui,sans-serif" font-weight="600" font-size="12" fill="rgba(255,255,255,.92)">${title}</text></svg>`;
+}
+function sboxHtml(x, big){
+  const src = mediaSrc('s:' + x.id, x);
+  return `<span class="sbox">${src ? `<img src="${esc(src)}" alt="" onerror="this.outerHTML=''">` : packSVG(x)}${qtyOf(x) > 1 ? `<span class="qty">×${qtyOf(x)}</span>` : ''}${big ? '' : `<span class="kind">${esc(x.kind)}</span>`}</span>`;
+}
+function renderSealed(){
+  const L = S.sealed, st = sumUp(L), n = L.reduce((a, x) => a + qtyOf(x), 0);
+  $('#sealed').innerHTML = `
+    <div class="top"><h1>Scellé</h1>${L.length ? `<button class="icon-btn" id="sadd" aria-label="Ajouter un produit scellé">${I.plus}</button>` : ''}</div>
+    <p class="summary">${L.length ? `<strong>${n} produit${n > 1 ? 's' : ''}</strong> scellé${n > 1 ? 's' : ''}${st.val ? `<br>Valeur estimée <strong>${eur(st.val)}</strong> ${deltaHtml(st.buy, st.priced)}` : ''}` : ''}</p>
+    ${L.length ? `<div class="sgrid">${L.map((x, i) => `<button class="sitem" data-s="${i}">${sboxHtml(x)}
+        <div class="n">${esc(x.name || x.kind)}</div><div class="m">${esc([x.set, LANGS[x.lang] || x.lang].filter(Boolean).join(' · '))}</div>
+        <div class="v"><b>${valueOf(x) ? eur(valueOf(x)) : '— €'}</b>${deltaHtml(x.buy, x.cur)}</div></button>`).join('')}</div>`
+      : `<div class="empty-state"><div class="ill"><span></span><span></span><span></span></div><b>Ton scellé</b>Displays, ETB, coffrets, boosters… Suis leur valeur, à l'unité ou par lot.<br><button class="btn" id="sadd">${I.plus}Ajouter un produit</button></div>`}`;
+  const a = $('#sadd'); if (a) a.onclick = () => sealedForm();
+  $$('[data-s]', $('#sealed')).forEach(c => c.onclick = () => sealedForm(S.sealed[+c.dataset.s]));
+}
+function sealedForm(x){
+  const isNew = !x;
+  const d = x ? {...x} : {id:uid(), name:'', kind:'Display', set:'', lang:'fr', qty:1, buy:null, cur:null, img:null, added:Date.now()};
+  const key = 's:' + d.id;
+  const w = openSheet(`
+    <div class="shero" id="sprev">${sboxHtml(d, true)}</div>
+    <div class="mediarow" style="grid-template-columns:1fr"><button class="btn ghost" id="simg">${I.camera}Photo du produit</button></div>
+    <div class="field"><label for="sn">Nom du produit</label><input id="sn" class="txt" maxlength="80" placeholder="Ex. Coffret Dresseur d’Élite Évolutions Prismatiques" value="${esc(d.name)}"></div>
+    <div class="field"><span class="flabel">Type</span><div class="chips-wrap" id="sk">${SEALED_KINDS.map(k => `<button class="chip ${k.id === d.kind ? 'on' : ''}" data-v="${k.id}">${k.id}</button>`).join('')}</div></div>
+    <div class="row field">
+      <div style="flex:1.5"><label class="flabel" for="sset">Extension</label><input id="sset" class="txt" list="setlist" placeholder="Ex. Flammes Obsidiennes" value="${esc(d.set || '')}"><datalist id="setlist">${(SET_LIST.fr || []).map(z => `<option value="${esc(z.name)}">`).join('')}</datalist></div>
+      <div style="flex:1"><span class="flabel">Langue</span><div class="seg" id="sl">${[['fr','FR'],['en','EN'],['ja','JP']].map(([k, l]) => `<button data-v="${k}" class="${d.lang === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+    </div>
+    <div class="field"><span class="flabel">Quantité</span><div class="stepper"><button id="sqm" aria-label="Moins">−</button><span id="sqv">${qtyOf(d)}</span><button id="sqp" aria-label="Plus">+</button></div></div>
+    <div class="prices">
+      <div class="pbox"><label for="sb">Achat (à l’unité)</label><input id="sb" inputmode="decimal" placeholder="— €" value="${d.buy ?? ''}"></div>
+      <div class="pbox"><label for="sv">Actuel (à l’unité)</label><input id="sv" inputmode="decimal" placeholder="— €" value="${d.cur ?? ''}"></div>
+    </div>
+    <div class="gain" id="sgain"></div>
+    <div id="slinks"></div>
+    <div class="actions">
+      <button class="btn" id="ssave">${isNew ? 'Ajouter au scellé' : 'Enregistrer'}</button>
+      ${isNew ? '' : '<button class="btn danger" id="sdel">Supprimer</button>'}
+    </div>`, {onClose:renderSealed});
+  const refresh = () => {
+    d.name = $('#sn', w).value.trim(); d.set = $('#sset', w).value.trim();
+    d.buy = num($('#sb', w).value); d.cur = num($('#sv', w).value);
+    $('#sprev', w).innerHTML = sboxHtml(d, true);
+    const q = `${d.name || (d.kind + ' ' + d.set)} ${d.lang === 'ja' ? 'jap' : d.lang === 'en' ? 'anglais' : ''}`.trim();
+    $('#slinks', w).innerHTML = q ? `<div class="check">
+      <a href="https://www.ebay.fr/sch/i.html?_nkw=${encodeURIComponent(q)}&LH_Sold=1&LH_Complete=1&_sop=13" target="_blank" rel="noopener">eBay vendues ${I.ext}</a>
+      <a href="https://www.cardmarket.com/fr/Pokemon/Products/Search?category=-1&searchString=${encodeURIComponent(d.name || d.set)}" target="_blank" rel="noopener">Cardmarket ${I.ext}</a></div>` : '';
+    const tot = valueOf(d);
+    $('#sgain', w).innerHTML = qtyOf(d) > 1 && tot ? `<span>Total pour ${qtyOf(d)}</span><b>${eur(tot)} ${deltaHtml(d.buy, d.cur)}</b>` : '';
+  };
+  refresh();
+  ['sn', 'sset', 'sb', 'sv'].forEach(id => $('#' + id, w).oninput = refresh);
+  $$('#sk .chip', w).forEach(c => c.onclick = () => { d.kind = c.dataset.v; $$('#sk .chip', w).forEach(z => z.classList.toggle('on', z === c)); refresh(); });
+  $$('#sl button', w).forEach(c => c.onclick = () => { d.lang = c.dataset.v; $$('#sl button', w).forEach(z => z.classList.toggle('on', z === c)); refresh(); });
+  $('#sqm', w).onclick = () => { d.qty = Math.max(1, qtyOf(d) - 1); $('#sqv', w).textContent = d.qty; refresh(); };
+  $('#sqp', w).onclick = () => { d.qty = qtyOf(d) + 1; $('#sqv', w).textContent = d.qty; refresh(); };
+  $('#simg', w).onclick = () => mediaSheet(key, d, refresh);
+  $('#ssave', w).onclick = () => {
+    refresh();
+    if (!d.name && !d.set) { toast('Donne un nom au produit'); $('#sn', w).focus(); return; }
+    if (isNew) S.sealed.unshift(d); else Object.assign(x, d);
+    save(); closeSheet(w); renderSealed(); toast(isNew ? 'Ajouté au scellé' : 'Produit enregistré');
+  };
+  const del = $('#sdel', w);
+  if (del) del.onclick = async () => {
+    if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Confirmer la suppression'; return; }
+    await dropMedia(key); S.sealed = S.sealed.filter(z => z !== x); save(); closeSheet(w); renderSealed(); toast('Produit supprimé');
+  };
+}
+
 /* ---------- Réglages : sauvegarde ---------- */
 function openSettings(){
   const w = openSheet(`<h3>Réglages</h3>
@@ -1356,13 +1632,13 @@ function openSettings(){
     document.body.appendChild(a); a.click(); a.remove();
   };
   $('#imp', w).onchange = async e => {
-    try { const d = JSON.parse(await e.target.files[0].text()); if (!d.binders) throw 0; S = d; save(); closeSheet(w); renderHome(); renderWish(); toast('Sauvegarde importée'); }
+    try { const d = JSON.parse(await e.target.files[0].text()); if (!d.binders) throw 0; S = d; fixState(); save(); closeSheet(w); renderAll(); toast('Sauvegarde importée'); }
     catch { toast('Ce fichier n’est pas une sauvegarde PokéFolio'); }
   };
   const r = $('#rst', w);
   r.onclick = () => {
     if (!r.classList.contains('armed')) { r.classList.add('armed'); r.textContent = 'Confirmer : tout effacer'; return; }
-    S = seed(); save(); closeSheet(w); renderHome(); renderWish();
+    S = seed(); save(); closeSheet(w); renderAll();
   };
 }
 
@@ -1370,15 +1646,15 @@ function openSettings(){
 function setTab(t){
   tab = t;
   $$('.tab[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
-  $('#home').hidden = t !== 'home'; $('#wish').hidden = t !== 'wish';
+  ['home', 'graded', 'sealed', 'wish'].forEach(v => $('#' + v).hidden = t !== v);
   const v = $('#' + t);
   if (!reduced) v.animate([{opacity:0, transform:'translateY(8px)'}, {opacity:1, transform:'none'}], {duration:300, easing:'cubic-bezier(.2,.8,.2,1)'});
 }
 $$('.tab[data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab));
-$('#addBtn').onclick = () => openSearch(tab === 'wish' ? {wish:true} : {});
+$('#addBtn').onclick = () => tab === 'graded' ? gradedForm() : tab === 'sealed' ? sealedForm() : openSearch(tab === 'wish' ? {wish:true} : {});
 
 /* ---------- Init ---------- */
-renderHome(); renderWish(); loadSets(); loadPhotos();
+renderAll(); loadSets(); loadPhotos();
 if ('serviceWorker' in navigator && location.protocol === 'https:') { try { navigator.serviceWorker.register('sw.js').catch(() => {}); } catch {} }
 </script>
 </body>
